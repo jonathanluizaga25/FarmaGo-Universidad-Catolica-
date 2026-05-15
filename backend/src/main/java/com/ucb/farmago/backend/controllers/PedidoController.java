@@ -3,6 +3,7 @@ package com.ucb.farmago.backend.controllers;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -21,18 +22,26 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(pedidoService.obtenerPorId(id));
+    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(pedidoService.obtenerPorId(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     public ResponseEntity<Pedido> crear(@RequestBody Pedido pedido) {
-        return ResponseEntity.ok(pedidoService.crear(pedido));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crear(pedido));
     }
 
     @PutMapping("/{id}/estado")
-    public ResponseEntity<Pedido> actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
-        return ResponseEntity.ok(pedidoService.actualizarEstado(id, estado));
+    public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
+        try {
+            return ResponseEntity.ok(pedidoService.actualizarEstado(id, estado));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/cliente/{clienteId}")
