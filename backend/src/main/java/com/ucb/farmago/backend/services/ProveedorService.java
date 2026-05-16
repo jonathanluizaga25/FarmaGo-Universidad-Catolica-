@@ -30,7 +30,6 @@ public class ProveedorService {
         existente.setNombre(proveedor.getNombre());
         existente.setContacto(proveedor.getContacto());
         existente.setTelefono(proveedor.getTelefono());
-        existente.setLaboratorio(proveedor.getLaboratorio());
         return proveedorRepository.save(existente);
     }
 

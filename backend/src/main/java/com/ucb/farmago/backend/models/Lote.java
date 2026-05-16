@@ -28,7 +28,7 @@ public class Lote {
     @Column(name = "fecha_vencimiento", nullable = false)
     private Date fechaVencimiento;
 
-    private String estado = "ACTIVO";
+    private String estado = "DISPONIBLE";
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -51,4 +51,3 @@ public class Lote {
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 }
-

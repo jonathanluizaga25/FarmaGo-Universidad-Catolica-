@@ -17,7 +17,6 @@ public class Proveedor {
     private String contacto;
 
     private String telefono;
-    private String laboratorio;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -30,8 +29,4 @@ public class Proveedor {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public String getLaboratorio() { return laboratorio; }
-    public void setLaboratorio(String laboratorio) { this.laboratorio = laboratorio; }
 }
-

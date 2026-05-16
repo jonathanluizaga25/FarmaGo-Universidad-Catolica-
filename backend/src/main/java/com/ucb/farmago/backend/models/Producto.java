@@ -21,11 +21,13 @@ public class Producto {
     private BigDecimal precio;
 
     private String imagenUrl;
-
     private String categoria;
 
     @Column(name = "stock_minimo")
     private Integer stockMinimo;
+
+    @Column(name = "stock_actual", columnDefinition = "int default 0")
+    private Integer stockActual = 0;
 
     @ManyToOne
     @JoinColumn(name = "laboratorio_id")
@@ -52,7 +54,9 @@ public class Producto {
     public Integer getStockMinimo() { return stockMinimo; }
     public void setStockMinimo(Integer stockMinimo) { this.stockMinimo = stockMinimo; }
 
+    public Integer getStockActual() { return stockActual; }
+    public void setStockActual(Integer stockActual) { this.stockActual = stockActual; }
+
     public Proveedor getLaboratorio() { return laboratorio; }
     public void setLaboratorio(Proveedor laboratorio) { this.laboratorio = laboratorio; }
 }
-

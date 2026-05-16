@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public class DescuentoDTO {
 
     private Long id;
-    private ProveedorDTO proveedor;
+    private AcuerdoComercialDTO acuerdo;
     private ProductoDTO producto;
     private BigDecimal porcentaje;
     private LocalDate fechaInicio;
@@ -16,7 +16,7 @@ public class DescuentoDTO {
 
     public DescuentoDTO(Descuento descuento) {
         this.id = descuento.getId();
-        this.proveedor = descuento.getProveedor() != null ? new ProveedorDTO(descuento.getProveedor()) : null;
+        this.acuerdo = descuento.getAcuerdo() != null ? new AcuerdoComercialDTO(descuento.getAcuerdo()) : null;
         this.producto = descuento.getProducto() != null ? new ProductoDTO(descuento.getProducto()) : null;
         this.porcentaje = descuento.getPorcentaje();
         this.fechaInicio = descuento.getFechaInicio();
@@ -25,7 +25,7 @@ public class DescuentoDTO {
     }
 
     public Long getId() { return id; }
-    public ProveedorDTO getProveedor() { return proveedor; }
+    public AcuerdoComercialDTO getAcuerdo() { return acuerdo; }
     public ProductoDTO getProducto() { return producto; }
     public BigDecimal getPorcentaje() { return porcentaje; }
     public LocalDate getFechaInicio() { return fechaInicio; }

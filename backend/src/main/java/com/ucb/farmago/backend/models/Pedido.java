@@ -24,7 +24,7 @@ public class Pedido {
     private BigDecimal total;
 
     @Column(nullable = false)
-    private String estado = "PROCESANDO";
+    private String estado = "PENDIENTE";
 
     @Column(name = "tipo_entrega", nullable = false)
     private String tipoEntrega;
@@ -65,4 +65,3 @@ public class Pedido {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
-
