@@ -16,7 +16,7 @@ public class UsuarioService {
 
     public Usuario registrar(Usuario usuario) {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new RuntimeException("El email ya está registrado");
+            throw new RuntimeException("El email ya esta registrado");
         }
         usuario.setPasswordHash(passwordEncoder.encode(usuario.getPasswordHash()));
         usuario.setRol("CLIENTE");

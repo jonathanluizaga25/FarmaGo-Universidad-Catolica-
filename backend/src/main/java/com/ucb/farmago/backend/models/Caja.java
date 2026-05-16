@@ -22,13 +22,8 @@ public class Caja {
     @Column(name = "total_qr")
     private BigDecimal totalQr = BigDecimal.ZERO;
 
-    @Column(name = "total_general")
-    private BigDecimal totalGeneral = BigDecimal.ZERO;
-
     private LocalDate fecha;
-
     private String turno;
-
     private Boolean cerrado = false;
 
     public Long getId() { return id; }
@@ -43,8 +38,7 @@ public class Caja {
     public BigDecimal getTotalQr() { return totalQr; }
     public void setTotalQr(BigDecimal totalQr) { this.totalQr = totalQr; }
 
-    public BigDecimal getTotalGeneral() { return totalGeneral; }
-    public void setTotalGeneral(BigDecimal totalGeneral) { this.totalGeneral = totalGeneral; }
+    public BigDecimal getTotalGeneral() { return totalEfectivo.add(totalQr); }
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
@@ -55,4 +49,3 @@ public class Caja {
     public Boolean getCerrado() { return cerrado; }
     public void setCerrado(Boolean cerrado) { this.cerrado = cerrado; }
 }
-

@@ -5,23 +5,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "descuento")
-public class Descuento {
+@Table(name = "acuerdo_comercial")
+public class AcuerdoComercial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "acuerdo_id", nullable = false)
-    private AcuerdoComercial acuerdo;
-
-    @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
+    @JoinColumn(name = "proveedor_id", nullable = false)
+    private Proveedor proveedor;
 
     @Column(nullable = false)
-    private BigDecimal porcentaje;
+    private String descripcion;
 
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
@@ -34,14 +30,11 @@ public class Descuento {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public AcuerdoComercial getAcuerdo() { return acuerdo; }
-    public void setAcuerdo(AcuerdoComercial acuerdo) { this.acuerdo = acuerdo; }
+    public Proveedor getProveedor() { return proveedor; }
+    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
 
-    public Producto getProducto() { return producto; }
-    public void setProducto(Producto producto) { this.producto = producto; }
-
-    public BigDecimal getPorcentaje() { return porcentaje; }
-    public void setPorcentaje(BigDecimal porcentaje) { this.porcentaje = porcentaje; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     public LocalDate getFechaInicio() { return fechaInicio; }
     public void setFechaInicio(LocalDate fechaInicio) { this.fechaInicio = fechaInicio; }
