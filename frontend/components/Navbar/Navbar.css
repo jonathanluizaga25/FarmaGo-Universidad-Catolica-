@@ -1,0 +1,334 @@
+/* ═══════════════════════════════════════════
+   VARIABLES
+═══════════════════════════════════════════ */
+:root {
+  --navy:   #0d1b3e;
+  --gold:   #e8b800;
+  --cyan:   #00aeef;
+  --red:    #e63b3b;
+  --white:  #ffffff;
+  --gray-light: #f0f4f8;
+  --gray:   #6b7280;
+  --font-main: 'Georgia', serif;
+  --font-ui:   'Segoe UI', system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   BARRA SUPERIOR (blanca)
+═══════════════════════════════════════════ */
+.navbar-top {
+  background: var(--white);
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-top__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo texto */
+.navbar-top__logo {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navbar-top__logo-text {
+  font-family: var(--font-main);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+}
+
+.navbar-top__logo-go {
+  color: var(--gold);
+}
+
+/* Buscador */
+.navbar-top__search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--gray-light);
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 14px;
+  gap: 10px;
+  transition: border-color 0.2s;
+}
+
+.navbar-top__search:focus-within {
+  border-color: var(--navy);
+  background: var(--white);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gray);
+  flex-shrink: 0;
+}
+
+.navbar-top__search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--navy);
+}
+
+.navbar-top__search input::placeholder {
+  color: #9ca3af;
+}
+
+.search-clear {
+  background: #9ca3af;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.search-clear:hover {
+  background: var(--gray);
+}
+
+/* Iconos derecha */
+.navbar-top__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.navbar-top__icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--navy);
+  transition: background 0.2s;
+  position: relative;
+  text-decoration: none; /* por si se usa como <Link> */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-top__icon-btn:hover {
+  background: var(--gray-light);
+}
+
+.navbar-top__icon-btn svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+}
+
+/* ═══════════════════════════════════════════
+   NAVBAR PRINCIPAL (azul marino)
+═══════════════════════════════════════════ */
+.navbar-main {
+  background: var(--navy);
+}
+
+.navbar-main__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Ícono cruz */
+.navbar-main__brand {
+  padding: 12px 0;
+  flex-shrink: 0;
+}
+
+.cross-icon {
+  width: 52px;
+  height: 52px;
+}
+
+/* Links de navegación */
+.navbar-main__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 4px;
+  flex: 1; /* empuja los botones auth al extremo derecho */
+}
+
+/* ── Botones Registrarse / Iniciar sesión ── */
+.navbar-main__auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 7px;
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: background 0.2s, color 0.2s, transform 0.15s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.auth-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Botón contorno — Registrarse */
+.auth-btn--outline {
+  background: transparent;
+  color: var(--white);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+.auth-btn--outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+
+/* Botón sólido — Iniciar sesión */
+.auth-btn--solid {
+  background: var(--gold);
+  color: var(--navy);
+  border: 1.5px solid var(--gold);
+}
+
+.auth-btn--solid:hover {
+  background: #ffd000;
+  border-color: #ffd000;
+  transform: translateY(-1px);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 18px;
+  text-decoration: none;
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.nav-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 18px;
+  right: 18px;
+  height: 3px;
+  background: var(--gold);
+  border-radius: 2px 2px 0 0;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover {
+  color: var(--gold);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-link.active {
+  color: var(--gold);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .navbar-top__inner {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .navbar-top__search {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .navbar-main__brand {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 16px 12px;
+    font-size: 0.85rem;
+  }
+
+  .navbar-main__auth {
+    display: none; /* se ocultan en móvil; podés moverlos al menú hamburguesa */
+  }
+}
