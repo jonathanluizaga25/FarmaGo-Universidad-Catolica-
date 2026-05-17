@@ -1,0 +1,305 @@
+/* ═══════════════════════════════════════════
+   VARIABLES GLOBALES
+═══════════════════════════════════════════ */
+:root {
+  --navy: #0d1b3e;
+  --gold: #e8b800;
+  --cyan: #00aeef;
+  --red: #e63b3b;
+  --white: #ffffff;
+  --bg: #eef2f7;
+  --card-bg: #ffffff;
+  --font-serif: 'Georgia', serif;
+  --font-ui: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   RESET BÁSICO
+═══════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--navy);
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  min-height: calc(100vh - 200px);
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.hero__content {
+  flex: 1;
+  max-width: 520px;
+}
+
+.hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+}
+
+.hero__divider {
+  width: 52px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+  margin: 24px 0;
+}
+
+.hero__subtitle {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #4b5563;
+  max-width: 420px;
+  margin-bottom: 40px;
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: var(--gold);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 16px 32px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.hero__btn:hover {
+  background: #162d5e;
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════
+   LOGO FarmaGO
+═══════════════════════════════════════════ */
+.hero__graphic {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.big-cross {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  object-fit: contain;
+
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   FEATURES / TARJETAS
+═══════════════════════════════════════════ */
+.features {
+  background: var(--white);
+  padding: 48px 40px;
+}
+
+.features__grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 28px 20px;
+  background: var(--card-bg);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: box-shadow 0.25s, transform 0.2s;
+}
+
+.feature-card:hover {
+  box-shadow: 0 8px 30px rgba(13, 27, 62, 0.1);
+  transform: translateY(-4px);
+}
+
+.feature-card__icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  background: var(--navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+}
+
+.feature-card__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.feature-card__title {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.feature-card__desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer {
+  background: var(--navy);
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.footer__inner {
+  text-align: center;
+}
+
+.footer__logo {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.footer__logo-go {
+  color: var(--gold);
+}
+
+.footer__copy {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Redes sociales */
+.footer__social {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.social-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.1);
+}
+
+.social-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 960px) {
+  .features__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 48px 24px 40px;
+    text-align: center;
+  }
+
+  .hero__divider {
+    margin: 20px auto;
+  }
+
+  .hero__subtitle {
+    margin: 0 auto 32px;
+  }
+
+  .hero__graphic {
+    width: 100%;
+  }
+
+  .big-cross {
+    max-width: 260px;
+  }
+
+  .features {
+    padding: 40px 24px;
+  }
+
+  .features__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__social {
+    position: static;
+    transform: none;
+    margin-top: 16px;
+  }
+
+  .footer {
+    flex-direction: column;
+    padding: 32px 24px;
+  }
+}
