@@ -1,9 +1,10 @@
-package com.ucb.farmago.backend.services;
+﻿package com.ucb.farmago.backend.services;
 
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -43,3 +44,5 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado);
     }
 }
+
+
