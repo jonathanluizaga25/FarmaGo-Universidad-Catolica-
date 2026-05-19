@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════
+   VARIABLES
+═══════════════════════════════════════════ */
+:root {
+  --navy: #0d1b3e;
+  --gold: #e8b800;
+  --white: #ffffff;
+  --bg: #eef2f7;
+  --font-serif: "Georgia", serif;
+  --font-ui: "Segoe UI", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--navy);
+}
+
+.contactos-main {
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.about-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.about-hero__content {
+  flex: 1;
+  max-width: 540px;
+}
+
+.about-hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.highlight {
+  color: var(--gold);
+}
+
+.about-hero__divider {
+  width: 52px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+  margin: 22px 0;
+}
+
+.about-hero__desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #4b5563;
+  margin-bottom: 14px;
+}
+
+.about-hero__desc:last-child {
+  margin-bottom: 0;
+}
+
+.about-hero__logo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.about-hero__logo-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(0, 174, 239, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════
+   WHAT SECTION
+═══════════════════════════════════════════ */
+.what-section {
+  background: var(--white);
+  padding: 72px 40px;
+}
+
+.what-section__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.65;
+  max-width: 600px;
+  margin-bottom: 48px;
+}
+
+/* ═══════════════════════════════════════════
+   GRID OBJETIVOS
+═══════════════════════════════════════════ */
+.objetivos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.objetivo-card {
+  background: var(--bg);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: 0.25s;
+}
+
+.objetivo-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+  box-shadow: 0 8px 32px rgba(13, 27, 62, 0.1);
+}
+
+.objetivo-card__icon {
+  width: 52px;
+  height: 52px;
+  background: var(--navy);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.objetivo-card__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.objetivo-card__titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.objetivo-card__desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
