@@ -111,16 +111,20 @@ export default function RegistroPage() {
     return newErrors;
   };
 
-  const handleSubmit = () => {
-    const validation = validate();
-
-    if (Object.keys(validation).length > 0) {
-      setErrors(validation);
-      return;
-    }
-
-    alert("Cuenta creada");
-  };
+  const handleSubmit = async () => { 
+    const validation = validate(); 
+    if (Object.keys(validation).length > 0) { 
+      setErrors(validation); 
+      return; 
+    } 
+    try { 
+      await registrarUsuario({ 
+        nombre: form.nombre, 
+        email: form.correo, 
+        password: form.contrasena, }); 
+        alert('Cuenta creada exitosamente'); 
+      } catch (error) { 
+        alert('Error al registrar: ' + error.message); } };
 
   return (
     <div className={styles.page}>
