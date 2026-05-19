@@ -1,4 +1,4 @@
-ackage com.ucb.farmago.backend;
+package com.ucb.farmago.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
