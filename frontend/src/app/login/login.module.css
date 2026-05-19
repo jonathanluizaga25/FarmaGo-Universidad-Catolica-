@@ -1,0 +1,261 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito', sans-serif;
+}
+ 
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  background: linear-gradient(135deg, #eef2f8 0%, #dce6f5 100%);
+  position: relative;
+  overflow: hidden;
+}
+ 
+.main::before,
+.main::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.main::before {
+  width: 480px; height: 480px;
+  background: radial-gradient(circle, #e8a020, transparent 70%);
+  top: -160px; left: -160px;
+}
+.main::after {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #3ab5c8, transparent 70%);
+  bottom: -120px; right: -100px;
+}
+ 
+/* ── CARD ── */
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 44px 48px 40px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 8px 40px rgba(26, 47, 94, 0.12);
+  position: relative;
+  z-index: 1;
+  animation: cardIn 0.45s ease both;
+}
+ 
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+.cardLogo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+ 
+.title {
+  text-align: center;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #1a2f5e;
+  margin-bottom: 6px;
+}
+ 
+.subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #7a8aaa;
+  margin-bottom: 28px;
+}
+ 
+.gold { color: #e8a020; }
+ 
+/* ── ERROR ── */
+.errorMsg {
+  background: #fff0f0;
+  border: 1px solid #f5c0c0;
+  color: #c0392b;
+  font-size: 0.82rem;
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  animation: shake 0.3s ease;
+}
+ 
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+ 
+/* ── FIELD ── */
+.field { margin-bottom: 18px; }
+ 
+.label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1a2f5e;
+  margin-bottom: 6px;
+}
+ 
+.inputWrap { position: relative; }
+ 
+.input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border: 1.5px solid #d0d8e8;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #2d2d2d;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafbfd;
+}
+.input::placeholder { color: #7a8aaa; }
+.input:focus {
+  border-color: #e8a020;
+  box-shadow: 0 0 0 3px rgba(232, 160, 32, 0.12);
+  background: #fff;
+}
+ 
+.iLeft {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7a8aaa;
+  display: flex;
+  align-items: center;
+}
+ 
+.iRight {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7a8aaa;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+ 
+/* ── REMEMBER ROW ── */
+.rowRemember {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  margin-top: 4px;
+}
+ 
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.83rem;
+  color: #7a8aaa;
+  cursor: pointer;
+}
+.checkLabel input[type='checkbox'] {
+  width: 15px;
+  height: 15px;
+  accent-color: #1a2f5e;
+}
+ 
+.forgotLink {
+  font-size: 0.83rem;
+  color: #e8a020;
+  font-weight: 700;
+  text-decoration: none;
+}
+.forgotLink:hover { text-decoration: underline; }
+ 
+/* ── BUTTON ── */
+.btnLogin {
+  width: 100%;
+  padding: 13px;
+  background: #1a2f5e;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.3px;
+}
+.btnLogin:hover  { background: #243d7a; }
+.btnLogin:active { transform: scale(0.98); }
+ 
+/* ── DIVIDER ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  font-size: 0.8rem;
+  color: #7a8aaa;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d0d8e8;
+}
+ 
+/* ── SOCIAL ── */
+.socialBtns { display: flex; gap: 12px; }
+ 
+.btnSocial {
+  flex: 1;
+  padding: 10px 0;
+  border: 1.5px solid #d0d8e8;
+  background: #ffffff;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.btnSocial:hover {
+  border-color: #1a2f5e;
+  box-shadow: 0 2px 8px rgba(26, 47, 94, 0.08);
+}
+ 
+/* ── REGISTER LINK ── */
+.registerLink {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.85rem;
+  color: #7a8aaa;
+}
+.registerLink a {
+  color: #e8a020;
+  font-weight: 700;
+  text-decoration: none;
+}
+.registerLink a:hover { text-decoration: underline; }
