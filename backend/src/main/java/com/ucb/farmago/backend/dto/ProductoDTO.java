@@ -11,7 +11,9 @@ public class ProductoDTO {
     private BigDecimal precio;
     private String imagenUrl;
     private String categoria;
+    private String tipo;
     private Integer stockMinimo;
+    private Integer stockActual;
     private ProveedorDTO laboratorio;
     private Integer stockActual;
 
@@ -26,6 +28,7 @@ public class ProductoDTO {
         this.precio = producto.getPrecio();
         this.imagenUrl = producto.getImagenUrl();
         this.categoria = producto.getCategoria();
+        this.tipo = producto.getTipo();
         this.stockMinimo = producto.getStockMinimo();
         this.stockActual = producto.getStockActual();
         this.laboratorio = producto.getLaboratorio() != null ? new ProveedorDTO(producto.getLaboratorio()) : null;
@@ -37,6 +40,8 @@ public class ProductoDTO {
     public BigDecimal getPrecio() { return precio; }
     public String getImagenUrl() { return imagenUrl; }
     public String getCategoria() { return categoria; }
+    public String getTipo() { return tipo; }
     public Integer getStockMinimo() { return stockMinimo; }
+    public Integer getStockActual() { return stockActual; }
     public ProveedorDTO getLaboratorio() { return laboratorio; }
 }

@@ -25,6 +25,13 @@ public class ProductoController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/otc")
+    public List<ProductoDTO> listarOtc() {
+        return productoService.listarOtc().stream()
+                .map(ProductoDTO::new)
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
         try {
@@ -36,7 +43,8 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoDTO> crear(@RequestBody Producto producto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ProductoDTO(productoService.crear(producto)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ProductoDTO(productoService.crear(producto)));
     }
 
     @PutMapping("/{id}")
