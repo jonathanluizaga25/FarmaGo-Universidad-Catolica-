@@ -1,0 +1,123 @@
+.page {
+  min-height: 100vh;
+  background-color: #f0f4fa;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1b3d6e;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: white;
+  width: 100%;
+  max-width: 460px;
+  padding: 36px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(27, 61, 110, 0.1);
+}
+
+.logoContainer {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.inputGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border: 1.5px solid #d1d9e6;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fafbfc;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #1b3d6e;
+}
+
+.inputError {
+  border-color: #e53e3e;
+}
+
+.errorText {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  background-color: #1b3d6e;
+  color: #f5a623;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.submitBtn:hover {
+  opacity: 0.9;
+}
+
+.loginText {
+  text-align: center;
+  margin-top: 16px;
+  color: #6b7280;
+}
+
+.link {
+  color: #1b3d6e;
+  text-decoration: underline;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.logoImage {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
