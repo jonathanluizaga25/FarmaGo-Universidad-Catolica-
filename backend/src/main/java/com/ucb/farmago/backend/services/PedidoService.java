@@ -21,10 +21,11 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
-    public Pedido crear(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+   public Pedido crear(Pedido pedido) {
+    pedido.setFechaPedido(java.time.LocalDateTime.now());
+    pedido.setEstado("Pendiente");
+    return pedidoRepository.save(pedido);
     }
-
     public Pedido actualizarEstado(Long id, String estado) {
         Pedido pedido = obtenerPorId(id);
         pedido.setEstado(estado);
