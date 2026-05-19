@@ -33,6 +33,7 @@ public class ProductoService {
         existente.setImagenUrl(producto.getImagenUrl());
         existente.setCategoria(producto.getCategoria());
         existente.setStockMinimo(producto.getStockMinimo());
+        existente.setStockActual(producto.getStockActual());
         return productoRepository.save(existente);
     }
 

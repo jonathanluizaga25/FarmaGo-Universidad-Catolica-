@@ -13,6 +13,11 @@ public class ProductoDTO {
     private String categoria;
     private Integer stockMinimo;
     private ProveedorDTO laboratorio;
+    private Integer stockActual;
+
+    public Integer getStockActual() { 
+        return stockActual; 
+    }
 
     public ProductoDTO(Producto producto) {
         this.id = producto.getId();
@@ -22,6 +27,7 @@ public class ProductoDTO {
         this.imagenUrl = producto.getImagenUrl();
         this.categoria = producto.getCategoria();
         this.stockMinimo = producto.getStockMinimo();
+        this.stockActual = producto.getStockActual();
         this.laboratorio = producto.getLaboratorio() != null ? new ProveedorDTO(producto.getLaboratorio()) : null;
     }
 
