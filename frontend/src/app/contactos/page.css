@@ -1,0 +1,300 @@
+/* ═══════════════════════════════════════════
+   VARIABLES
+═══════════════════════════════════════════ */
+:root {
+  --navy:       #0d1b3e;
+  --gold:       #e8b800;
+  --cyan:       #00aeef;
+  --red:        #e63b3b;
+  --white:      #ffffff;
+  --bg:         #eef2f7;
+  --font-serif: 'Georgia', serif;
+  --font-ui:    'Segoe UI', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--navy);
+}
+
+.contactos-main {
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   HERO — ABOUT
+═══════════════════════════════════════════ */
+.about-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.about-hero__content {
+  flex: 1;
+  max-width: 540px;
+}
+
+.about-hero__badge {
+  display: inline-block;
+  background: rgba(232, 184, 0, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(232, 184, 0, 0.4);
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+.about-hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--navy);
+  margin-bottom: 0;
+}
+
+.about-hero__title .highlight {
+  color: var(--gold);
+}
+
+.about-hero__divider {
+  width: 52px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+  margin: 22px 0;
+}
+
+.about-hero__desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #4b5563;
+  margin-bottom: 14px;
+}
+
+.about-hero__desc:last-child {
+  margin-bottom: 0;
+}
+
+/* Logo derecha */
+.about-hero__logo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.about-hero__logo-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(0, 174, 239, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.about-hero__logo img {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* ═══════════════════════════════════════════
+   SECCIÓN ¿QUÉ HACEMOS?
+═══════════════════════════════════════════ */
+.what-section {
+  background: var(--white);
+  padding: 72px 40px;
+}
+
+.what-section__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.section-title.white {
+  color: var(--white);
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.65;
+  max-width: 600px;
+  margin-bottom: 48px;
+}
+
+.section-subtitle.white {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Grid objetivos */
+.objetivos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.objetivo-card {
+  background: var(--bg);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: box-shadow 0.25s, transform 0.2s, border-color 0.2s;
+}
+
+.objetivo-card:hover {
+  box-shadow: 0 8px 32px rgba(13, 27, 62, 0.1);
+  transform: translateY(-4px);
+  border-color: var(--gold);
+}
+
+.objetivo-card__icon {
+  width: 52px;
+  height: 52px;
+  background: var(--navy);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.objetivo-card__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.objetivo-card__titulo {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.objetivo-card__desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SECCIÓN CONTACTO
+═══════════════════════════════════════════ */
+.contacto-section {
+  background: var(--navy);
+  padding: 72px 40px;
+}
+
+.contacto-section__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* Info izquierda */
+.contacto-info .section-subtitle {
+  margin-bottom: 36px;
+}
+
+.contacto-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.contacto-lista li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+}
+
+.contacto-lista__icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.contacto-lista__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Pills redes sociales */
+.contacto-social {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  text-decoration: none;
+  padding: 9px 16px;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.social-pill:hover {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--gold);
+}
+
+.social-pill svg {
+  width: 16px;
+  height: 16px;
+}
