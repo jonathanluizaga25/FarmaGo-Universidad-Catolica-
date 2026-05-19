@@ -1,10 +1,18 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
 export async function registrarUsuario(datos) {
+  const payload = {
+    nombre: datos.nombre,
+    email: datos.email,
+    passwordHash: datos.password,
+    direccion: datos.direccion,
+    telefono: datos.telefono,
+    rol: 'CLIENTE',
+  };
   const res = await fetch(`${API_URL}/auth/registro`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(datos),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error('Error al registrar usuario');
   return res.json();
