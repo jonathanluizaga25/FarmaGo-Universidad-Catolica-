@@ -1,4 +1,4 @@
-﻿package com.ucb.farmago.backend.services;
+package com.ucb.farmago.backend.services;
 
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
@@ -23,7 +23,7 @@ public class PedidoService {
     }
 
    public Pedido crear(Pedido pedido) {
-    pedido.setFechaPedido(java.time.LocalDateTime.now());
+    
     pedido.setEstado("Pendiente");
     return pedidoRepository.save(pedido);
     }
