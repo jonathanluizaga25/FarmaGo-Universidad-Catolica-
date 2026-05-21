@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,5 +69,10 @@ public class PedidoController {
                 .map(PedidoDTO::new)
                 .collect(Collectors.toList());
     }
-}
 
+    // HU-10: Calcular costo de envio segun direccion
+    @GetMapping("/costo-envio")
+    public ResponseEntity<BigDecimal> calcularCostoEnvio(@RequestParam String direccion) {
+        return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
+    }
+}

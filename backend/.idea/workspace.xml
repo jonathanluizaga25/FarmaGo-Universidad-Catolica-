@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a9b5a2d-2f09-423f-9167-bfbb9016f7f0" name="Changes" comment="" />
+    <list default="true" id="8a9b5a2d-2f09-423f-9167-bfbb9016f7f0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ucb/farmago/backend/services/PedidoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ucb/farmago/backend/services/PedidoService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,9 +38,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "feature/hu-09-alerta-desabastecimiento",
+    "git-widget-placeholder": "feature/hu-10-calculo-costo-envio",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Estudiante/Desktop/FarmaGo-Universidad-Catolica-/backend",
+    "node.js.selected.package.tslint": "(autodetect)",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
