@@ -1,9 +1,10 @@
-package com.ucb.farmago.backend.services;
+﻿package com.ucb.farmago.backend.services;
 
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,5 +43,23 @@ public class PedidoService {
 
     public List<Pedido> listarPorEstado(String estado) {
         return pedidoRepository.findByEstado(estado);
+    }
+
+    // HU-10: Calcula el costo de envio segun la direccion del cliente
+    public BigDecimal calcularCostoEnvio(String direccion) {
+        if (direccion == null || direccion.isEmpty()) {
+            return new BigDecimal("15");
+        }
+        String dir = direccion.toLowerCase();
+        // Zona central: envio gratuito
+        if (dir.contains("centro") || dir.contains("central")) {
+            return BigDecimal.ZERO;
+        }
+        // Zona norte o sur: costo medio
+        if (dir.contains("norte") || dir.contains("sur")) {
+            return new BigDecimal("10");
+        }
+        // Zona lejana: costo mayor
+        return new BigDecimal("15");
     }
 }
