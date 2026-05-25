@@ -40,6 +40,14 @@ public class CarritoService {
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
+        if ("ETICO".equals(producto.getTipo())) {
+            throw new RuntimeException(
+                    "El producto " + producto.getNombre() +
+                            " es un medicamento ético y requiere receta médica. " +
+                            "No puede agregarse al carrito en línea."
+            );
+        }
+
         if (producto.getStockActual() < cantidad) {
             throw new RuntimeException("Stock insuficiente");
         }
