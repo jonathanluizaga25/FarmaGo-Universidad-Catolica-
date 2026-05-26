@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./RegistroPage.module.css";
 
-// ── Icono de cruz médica ──────────────────────────────────────
 function MedicalCrossIcon() {
   return (
     <Link href="/" className={styles.logo}>
@@ -38,25 +37,14 @@ const IconLock = () => (
   </svg>
 );
 
-function InputField({
-  label,
-  id,
-  type,
-  placeholder,
-  icon,
-  value,
-  onChange,
-  error,
-}) {
+function InputField({ label, id, type, placeholder, icon, value, onChange, error }) {
   return (
     <div className={styles.inputGroup}>
       <label htmlFor={id} className={styles.label}>
         {label}
       </label>
-
       <div className={styles.inputWrapper}>
         <span className={styles.inputIcon}>{icon}</span>
-
         <input
           id={id}
           type={type}
@@ -66,7 +54,6 @@ function InputField({
           className={`${styles.input} ${error ? styles.inputError : ""}`}
         />
       </div>
-
       {error && <p className={styles.errorText}>{error}</p>}
     </div>
   );
@@ -81,45 +68,57 @@ export default function RegistroPage() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field) => (e) => {
-    setForm({
-      ...form,
-      [field]: e.target.value,
-    });
+    setForm({ ...form, [field]: e.target.value });
   };
 
   const validate = () => {
     const newErrors = {};
-
-    if (!form.nombre.trim()) {
-      newErrors.nombre = "El nombre es requerido";
-    }
-
-    if (!form.correo.trim()) {
-      newErrors.correo = "El correo es requerido";
-    }
-
-    if (form.contrasena.length < 8) {
-      newErrors.contrasena = "Mínimo 8 caracteres";
-    }
-
-    if (form.contrasena !== form.confirmar) {
-      newErrors.confirmar = "Las contraseñas no coinciden";
-    }
-
+    if (!form.nombre.trim()) newErrors.nombre = "El nombre es requerido";
+    if (!form.correo.trim()) newErrors.correo = "El correo es requerido";
+    if (form.contrasena.length < 8) newErrors.contrasena = "Mínimo 8 caracteres";
+    if (form.contrasena !== form.confirmar) newErrors.confirmar = "Las contraseñas no coinciden";
     return newErrors;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validation = validate();
-
     if (Object.keys(validation).length > 0) {
       setErrors(validation);
       return;
     }
 
-    alert("Cuenta creada");
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: form.nombre,
+          email: form.correo,
+          passwordHash: form.contrasena,
+          direccion: '',
+          telefono: '',
+          rol: 'CLIENTE',
+        }),
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        setErrors({ correo: msg });
+        return;
+      }
+
+      alert('¡Cuenta creada exitosamente! Ya puedes iniciar sesión.');
+      setForm({ nombre: '', correo: '', contrasena: '', confirmar: '' });
+      setErrors({});
+    } catch (e) {
+      setErrors({ correo: 'Error al conectar con el servidor' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -176,8 +175,12 @@ export default function RegistroPage() {
             error={errors.confirmar}
           />
 
-          <button onClick={handleSubmit} className={styles.submitBtn}>
-            Crear cuenta
+          <button
+            onClick={handleSubmit}
+            className={styles.submitBtn}
+            disabled={loading}
+          >
+            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </button>
 
           <p className={styles.loginText}>
