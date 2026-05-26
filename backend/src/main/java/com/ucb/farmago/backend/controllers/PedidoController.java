@@ -75,4 +75,16 @@ public class PedidoController {
     public ResponseEntity<BigDecimal> calcularCostoEnvio(@RequestParam String direccion) {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
     }
+
+    @PostMapping("/validar-factura")
+    public ResponseEntity<com.ucb.farmago.backend.dto.ResultadoValidacionDTO> validarFactura(
+            @RequestBody com.ucb.farmago.backend.dto.FacturaValidacionDTO facturaDTO) {
+        try {
+            com.ucb.farmago.backend.dto.ResultadoValidacionDTO resultado = pedidoService.validarFacturaVsPedido(facturaDTO);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new com.ucb.farmago.backend.dto.ResultadoValidacionDTO("ERROR", e.getMessage()));
+        }
+    }
 }
