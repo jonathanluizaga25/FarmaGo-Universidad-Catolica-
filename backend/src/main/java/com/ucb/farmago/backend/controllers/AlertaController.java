@@ -1,5 +1,4 @@
 package com.ucb.farmago.backend.controllers;
-
 import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.services.AlertaService;
 import org.springframework.http.ResponseEntity;
