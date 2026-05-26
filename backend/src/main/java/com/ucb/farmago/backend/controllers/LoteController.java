@@ -1,6 +1,7 @@
 package com.ucb.farmago.backend.controllers;
 
 import com.ucb.farmago.backend.dto.LoteDTO;
+import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Lote;
 import com.ucb.farmago.backend.services.LoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,12 @@ public class LoteController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // HU-13: Verificar vencimientos y generar alertas escalonadas
+    @PostMapping("/verificar-vencimientos")
+    public ResponseEntity<List<Alerta>> verificarVencimientos() {
+        List<Alerta> alertas = loteService.verificarVencimientos();
+        return ResponseEntity.ok(alertas);
     }
 }
