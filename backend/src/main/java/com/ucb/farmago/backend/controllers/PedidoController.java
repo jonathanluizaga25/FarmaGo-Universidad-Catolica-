@@ -75,4 +75,16 @@ public class PedidoController {
     public ResponseEntity<BigDecimal> calcularCostoEnvio(@RequestParam String direccion) {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
     }
+
+    // ==========================================
+    // HU-15: Historial de compras del cliente
+    // ==========================================
+    @GetMapping("/cliente/{clienteId}/historial")
+    public ResponseEntity<List<com.ucb.farmago.backend.dto.HistorialPedidoDTO>> obtenerHistorialCompras(@PathVariable Long clienteId) {
+        List<com.ucb.farmago.backend.dto.HistorialPedidoDTO> historial = pedidoService.obtenerHistorialCliente(clienteId);
+        if (historial.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(historial);
+    }
 }

@@ -1,17 +1,24 @@
 package com.ucb.farmago.backend.services;
 
+import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
+import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
+import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
 
     @Autowired
     private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private DetallePedidoRepository detallePedidoRepository;
 
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
@@ -61,5 +68,16 @@ public class PedidoService {
         }
         // Zona lejana: costo mayor
         return new BigDecimal("15");
+    }
+
+    public List<HistorialPedidoDTO> obtenerHistorialCliente(Long clienteId) {
+        // 1. Buscamos todos los pedidos del cliente usando el método existente del repositorio
+        List<Pedido> pedidos = pedidoRepository.findByClienteId(clienteId);
+
+        // 2. Mapeamos cada pedido extrayendo sus respectivos productos y convirtiéndolo al DTO detallado
+        return pedidos.stream().map(pedido -> {
+            List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(pedido.getId());
+            return new HistorialPedidoDTO(pedido, detalles);
+        }).collect(Collectors.toList());
     }
 }
