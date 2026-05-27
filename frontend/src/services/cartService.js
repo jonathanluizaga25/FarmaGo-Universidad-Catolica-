@@ -23,7 +23,9 @@ export const addToCart = (product) => {
 
   if (existingProduct) {
 
-    existingProduct.quantity += 1;
+    if (existingProduct.quantity < existingProduct.stock) {
+      existingProduct.quantity += 1;
+    }
 
   } else {
 
@@ -57,7 +59,7 @@ export const updateQuantity = (id, quantity) => {
 
       return {
         ...item,
-        quantity: Math.max(1, quantity),
+        quantity: Math.min(item.stock, Math.max(1, quantity)),
       };
 
     }

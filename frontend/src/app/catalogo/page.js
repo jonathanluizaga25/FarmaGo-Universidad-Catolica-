@@ -9,9 +9,8 @@ import ProductCard from "../../../components/ProductCard/ProductCard";
 export default function CatalogoPage() {
 
   return (
-
-<main className="catalog-container">
-<Navbar />
+    <main className="catalog-container">
+      <Navbar />
       <h1>Catálogo OTC</h1>
 
       <div className="products-grid">
@@ -28,3 +27,4 @@ export default function CatalogoPage() {
     </main>
   );
 }
+

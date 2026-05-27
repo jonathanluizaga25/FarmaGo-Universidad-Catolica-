@@ -27,10 +27,7 @@ export default function ProductCard({ product }) {
 
       <button
         className="details-btn"
-        onClick={() => {
-  console.log("Producto agregado:", product);
-  addToCart(product);
-}}
+        onClick={() => addToCart(product)}
       >
         Agregar al carrito
       </button>

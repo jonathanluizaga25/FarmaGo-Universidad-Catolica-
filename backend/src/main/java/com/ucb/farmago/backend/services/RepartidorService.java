@@ -1,4 +1,3 @@
-
 package com.ucb.farmago.backend.services;
 
 import com.ucb.farmago.backend.dto.DetallePedidoDTO;
@@ -10,6 +9,7 @@ import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ public class RepartidorService {
     @Autowired
     private EntregaRepository entregaRepository;
 
-    // Todos los pedidos asignados al repartidor
+    @Transactional(readOnly = true)
     public List<PedidoRepartidorDTO> obtenerPedidosAsignados(Long repartidorId) {
         List<Pedido> pedidos = pedidoRepository.findByRepartidorId(repartidorId);
 
@@ -44,7 +44,7 @@ public class RepartidorService {
         }).collect(Collectors.toList());
     }
 
-    // Pedidos asignados filtrados por estado (ej: solo EN_CAMINO)
+    @Transactional(readOnly = true)
     public List<PedidoRepartidorDTO> obtenerPedidosPorEstado(Long repartidorId, String estado) {
         List<Pedido> pedidos = pedidoRepository.findByRepartidorId(repartidorId)
                 .stream()
@@ -65,7 +65,7 @@ public class RepartidorService {
         }).collect(Collectors.toList());
     }
 
-    // Actualizar estado de la entrega (el repartidor marca en camino, entregado, etc.)
+    @Transactional
     public PedidoRepartidorDTO actualizarEstadoEntrega(Long entregaId, String estadoEntrega,
                                                         String observacion, Long repartidorId) {
         Entrega entrega = entregaRepository.findById(entregaId)
@@ -81,21 +81,20 @@ public class RepartidorService {
             entrega.setObservacion(observacion);
         }
 
-        if (estadoEntrega.equals("ENTREGADO")) {
+        if (estadoEntrega.equalsIgnoreCase("ENTREGADO")) {
             entrega.setEntregaExitosa(true);
             entrega.setFechaEntrega(java.time.LocalDateTime.now());
-        } else if (estadoEntrega.equals("FALLIDO")) {
+        } else if (estadoEntrega.equalsIgnoreCase("FALLIDO")) {
             entrega.setEntregaExitosa(false);
             entrega.setFechaEntrega(java.time.LocalDateTime.now());
         }
 
         entregaRepository.save(entrega);
 
-        // Sync estado del pedido también
         Pedido pedido = entrega.getPedido();
-        if (estadoEntrega.equals("EN_CAMINO")) pedido.setEstado("EN_CAMINO");
-        else if (estadoEntrega.equals("ENTREGADO")) pedido.setEstado("ENTREGADO");
-        else if (estadoEntrega.equals("FALLIDO")) pedido.setEstado("FALLIDO");
+        if (estadoEntrega.equalsIgnoreCase("EN_CAMINO")) pedido.setEstado("EN_CAMINO");
+        else if (estadoEntrega.equalsIgnoreCase("ENTREGADO")) pedido.setEstado("ENTREGADO");
+        else if (estadoEntrega.equalsIgnoreCase("FALLIDO")) pedido.setEstado("FALLIDO");
         pedidoRepository.save(pedido);
 
         List<DetallePedidoDTO> detalles = detallePedidoRepository

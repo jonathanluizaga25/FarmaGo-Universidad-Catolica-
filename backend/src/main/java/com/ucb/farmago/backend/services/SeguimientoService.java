@@ -9,6 +9,7 @@ import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public class SeguimientoService {
     @Autowired
     private EntregaRepository entregaRepository;
 
-    // Todos los pedidos de un cliente con su estado de entrega
+    @Transactional(readOnly = true)
     public List<SeguimientoPedidoDTO> obtenerPedidosCliente(Long clienteId) {
         List<Pedido> pedidos = pedidoRepository.findByClienteId(clienteId);
 
@@ -43,7 +44,7 @@ public class SeguimientoService {
         }).collect(Collectors.toList());
     }
 
-    // Un pedido específico con detalle completo
+    @Transactional(readOnly = true)
     public SeguimientoPedidoDTO obtenerDetallePedido(Long pedidoId, Long clienteId) {
         Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
