@@ -16,6 +16,10 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public List<Producto> listarOtc() {
+        return productoRepository.findByTipo("OTC");
+    }
+
     public Producto obtenerPorId(Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -32,6 +36,7 @@ public class ProductoService {
         existente.setPrecio(producto.getPrecio());
         existente.setImagenUrl(producto.getImagenUrl());
         existente.setCategoria(producto.getCategoria());
+        existente.setTipo(producto.getTipo());
         existente.setStockMinimo(producto.getStockMinimo());
         existente.setStockActual(producto.getStockActual());
         return productoRepository.save(existente);
