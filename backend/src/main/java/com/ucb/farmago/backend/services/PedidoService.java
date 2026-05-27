@@ -1,5 +1,8 @@
 package com.ucb.farmago.backend.services;
 
+import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
+import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
+import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
@@ -85,4 +89,65 @@ public class PedidoService {
         pedido.setEstado("CANCELADO");
         return pedidoRepository.save(pedido);
     }
+
+    @Transactional
+    public ResultadoValidacionDTO validarFacturaVsPedido(FacturaValidacionDTO facturaDTO) {
+        Pedido pedido = obtenerPorId(facturaDTO.getPedidoId());
+        List<DetallePedido> detallesOriginales = detallePedidoRepository.findByPedidoId(pedido.getId());
+
+        if (facturaDTO.getItems() == null || facturaDTO.getItems().size() != detallesOriginales.size()) {
+            pedido.setEstado("RECHAZADO_DEVOLUCION");
+            pedidoRepository.save(pedido);
+            return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
+                    "Discrepancia: La cantidad de ítems en la factura (" +
+                            (facturaDTO.getItems() != null ? facturaDTO.getItems().size() : 0) +
+                            ") no coincide con el pedido original (" + detallesOriginales.size() + ").");
+        }
+
+        for (DetallePedido detalleOriginal : detallesOriginales) {
+            Long prodId = detalleOriginal.getProducto().getId();
+
+            FacturaValidacionDTO.ItemFacturaDTO itemFactura = facturaDTO.getItems().stream()
+                    .filter(item -> item.getProductoId().equals(prodId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (itemFactura == null) {
+                pedido.setEstado("RECHAZADO_DEVOLUCION");
+                pedidoRepository.save(pedido);
+                return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
+                        "Discrepancia: El producto ID " + prodId + " no figura en la factura.");
+            }
+
+            if (!itemFactura.getCantidad().equals(detalleOriginal.getCantidad())) {
+                pedido.setEstado("RECHAZADO_DEVOLUCION");
+                pedidoRepository.save(pedido);
+                return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
+                        "Discrepancia en Producto ID " + prodId + ": Cantidad facturada (" +
+                                itemFactura.getCantidad() + ") difiere de la pedida (" + detalleOriginal.getCantidad() + ").");
+            }
+
+            if (itemFactura.getPrecioUnitario().compareTo(detalleOriginal.getPrecioUnitario()) != 0) {
+                pedido.setEstado("RECHAZADO_DEVOLUCION");
+                pedidoRepository.save(pedido);
+                return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
+                        "Discrepancia en Producto ID " + prodId + ": Precio facturado (" +
+                                itemFactura.getPrecioUnitario() + ") difiere del acordado (" + detalleOriginal.getPrecioUnitario() + ").");
+            }
+        }
+
+        pedido.setEstado("RECIBIDO");
+        pedidoRepository.save(pedido);
+        return new ResultadoValidacionDTO("RECIBIDO", "Validación exitosa. La factura coincide con el pedido.");
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistorialPedidoDTO> obtenerHistorialCliente(Long clienteId) {
+        List<Pedido> pedidos = pedidoRepository.findByClienteId(clienteId);
+        return pedidos.stream().map(pedido -> {
+            List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(pedido.getId());
+            return new HistorialPedidoDTO(pedido, detalles);
+        }).collect(Collectors.toList());
+    }
 }
+
