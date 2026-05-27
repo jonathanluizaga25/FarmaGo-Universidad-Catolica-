@@ -1,4 +1,5 @@
 package com.ucb.farmago.backend.services;
+
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
@@ -6,6 +7,7 @@ import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -68,10 +70,10 @@ public class PedidoService {
         return new BigDecimal("15");
     }
 
-    // HU-12: Cancelar pedido si esta en estado Pendiente y restaurar stock
+    @Transactional
     public Pedido cancelar(Long id) {
         Pedido pedido = obtenerPorId(id);
-        if (!"PENDIENTE".equals(pedido.getEstado())) {
+        if (!"Pendiente".equalsIgnoreCase(pedido.getEstado())) {
             throw new RuntimeException("Solo se pueden cancelar pedidos en estado Pendiente");
         }
         List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(id);

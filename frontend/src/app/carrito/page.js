@@ -98,6 +98,7 @@ export default function CarritoPage() {
                         );
                         refreshCart();
                       }}
+                      disabled={item.quantity >= item.stock}
                     >
                       +
                     </button>
