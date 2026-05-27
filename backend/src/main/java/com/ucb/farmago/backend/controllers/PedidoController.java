@@ -1,5 +1,4 @@
 package com.ucb.farmago.backend.controllers;
-
 import com.ucb.farmago.backend.dto.PedidoDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
@@ -74,5 +73,15 @@ public class PedidoController {
     @GetMapping("/costo-envio")
     public ResponseEntity<BigDecimal> calcularCostoEnvio(@RequestParam String direccion) {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
+    }
+
+    // HU-12: Cancelar pedido si esta en estado Pendiente
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<?> cancelar(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new PedidoDTO(pedidoService.cancelar(id)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
