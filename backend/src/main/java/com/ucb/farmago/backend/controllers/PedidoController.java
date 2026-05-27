@@ -1,6 +1,9 @@
 package com.ucb.farmago.backend.controllers;
 
+import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
+import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.PedidoDTO;
+import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +79,6 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
     }
 
-    // HU-12: Cancelar pedido si esta en estado Pendiente
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<?> cancelar(@PathVariable Long id) {
         try {
@@ -85,4 +87,24 @@ public class PedidoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/validar-factura")
+    public ResponseEntity<ResultadoValidacionDTO> validarFactura(@RequestBody FacturaValidacionDTO facturaDTO) {
+        try {
+            return ResponseEntity.ok(pedidoService.validarFacturaVsPedido(facturaDTO));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResultadoValidacionDTO("ERROR", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/cliente/{clienteId}/historial")
+    public ResponseEntity<List<HistorialPedidoDTO>> obtenerHistorialCompras(@PathVariable Long clienteId) {
+        List<HistorialPedidoDTO> historial = pedidoService.obtenerHistorialCliente(clienteId);
+        if (historial.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(historial);
+    }
 }
+

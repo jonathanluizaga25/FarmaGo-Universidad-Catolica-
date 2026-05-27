@@ -4,6 +4,7 @@ import com.ucb.farmago.backend.models.*;
 import com.ucb.farmago.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CarritoService {
@@ -31,10 +32,12 @@ public class CarritoService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public Carrito verCarrito(Long clienteId) {
         return obtenerOCrearCarrito(clienteId);
     }
 
+    @Transactional
     public Carrito agregar(Long clienteId, Long productoId, Integer cantidad) {
         Carrito carrito = obtenerOCrearCarrito(clienteId);
         Producto producto = productoRepository.findById(productoId)
@@ -68,9 +71,11 @@ public class CarritoService {
                         }
                 );
 
-        return carritoRepository.findById(carrito.getId()).get();
+        return carritoRepository.findById(carrito.getId())
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
     }
 
+    @Transactional
     public Carrito modificar(Long clienteId, Long productoId, Integer cantidad) {
         Carrito carrito = obtenerOCrearCarrito(clienteId);
 
@@ -81,7 +86,8 @@ public class CarritoService {
         if (cantidad <= 0) {
             carritoItemRepository.delete(item);
         } else {
-            Producto producto = productoRepository.findById(productoId).get();
+            Producto producto = productoRepository.findById(productoId)
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
             if (producto.getStockActual() < cantidad) {
                 throw new RuntimeException("Stock insuficiente");
             }
@@ -89,9 +95,11 @@ public class CarritoService {
             carritoItemRepository.save(item);
         }
 
-        return carritoRepository.findById(carrito.getId()).get();
+        return carritoRepository.findById(carrito.getId())
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
     }
 
+    @Transactional
     public Carrito quitar(Long clienteId, Long productoId) {
         Carrito carrito = obtenerOCrearCarrito(clienteId);
 
@@ -100,9 +108,11 @@ public class CarritoService {
                 .orElseThrow(() -> new RuntimeException("Producto no esta en el carrito"));
 
         carritoItemRepository.delete(item);
-        return carritoRepository.findById(carrito.getId()).get();
+        return carritoRepository.findById(carrito.getId())
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
     }
 
+    @Transactional
     public void vaciar(Long clienteId) {
         carritoRepository.findByClienteIdAndEstado(clienteId, "ACTIVO")
                 .ifPresent(c -> {
