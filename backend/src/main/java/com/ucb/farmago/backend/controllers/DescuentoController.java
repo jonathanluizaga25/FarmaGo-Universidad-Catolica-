@@ -4,8 +4,10 @@ import com.ucb.farmago.backend.services.DescuentoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+@Tag(name = "Descuentos")
 @RestController
 @RequestMapping("/api/descuentos")
 @CrossOrigin(origins = "*")

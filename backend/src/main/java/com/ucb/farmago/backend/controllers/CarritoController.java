@@ -5,7 +5,9 @@ import com.ucb.farmago.backend.services.CarritoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Carrito")
 @RestController
 @RequestMapping("/api/carrito")
 @CrossOrigin(origins = "*")

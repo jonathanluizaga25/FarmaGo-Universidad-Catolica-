@@ -4,9 +4,11 @@ import com.ucb.farmago.backend.services.CajaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Tag(name = "Caja")
 @RestController
 @RequestMapping("/api/caja")
 @CrossOrigin(origins = "*")

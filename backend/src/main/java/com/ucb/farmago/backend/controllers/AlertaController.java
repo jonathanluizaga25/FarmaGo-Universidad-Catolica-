@@ -4,8 +4,10 @@ import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.services.AlertaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+@Tag(name = "Alertas")
 @RestController
 @RequestMapping("/api/alertas")
 @CrossOrigin(origins = "http://localhost:3000")
