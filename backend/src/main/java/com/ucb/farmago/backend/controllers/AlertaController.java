@@ -1,14 +1,15 @@
 package com.ucb.farmago.backend.controllers;
 
-import com.ucb.farmago.backend.models.Alerta;
+import com.ucb.farmago.backend.dto.AlertaDTO;
 import com.ucb.farmago.backend.services.AlertaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/alertas")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class AlertaController {
 
     private final AlertaService alertaService;
@@ -24,8 +25,10 @@ public class AlertaController {
     }
 
     @GetMapping("/no-leidas")
-    public ResponseEntity<List<Alerta>> getAlertasNoLeidas() {
-        return ResponseEntity.ok(alertaService.getAlertasNoLeidas());
+    public ResponseEntity<List<AlertaDTO>> getAlertasNoLeidas() {
+        return ResponseEntity.ok(alertaService.getAlertasNoLeidas().stream()
+                .map(AlertaDTO::new)
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}/leer")
