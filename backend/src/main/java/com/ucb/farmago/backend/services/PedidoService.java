@@ -3,10 +3,12 @@ package com.ucb.farmago.backend.services;
 import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
 import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
+import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Carrito;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.repositories.AlertaRepository;
 import com.ucb.farmago.backend.repositories.CarritoRepository;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
@@ -37,6 +39,9 @@ public class PedidoService {
 
     @Autowired
     private CarritoRepository carritoRepository;
+
+    @Autowired
+    private AlertaRepository alertaRepository;
 
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
@@ -89,6 +94,15 @@ public class PedidoService {
         // Vaciar el carrito
         carrito.getItems().clear();
         carritoRepository.save(carrito);
+
+        // Alerta al administrador cuando se crea un nuevo pedido
+        Alerta alerta = new Alerta();
+        alerta.setTipo("NUEVO_PEDIDO");
+        alerta.setMensaje("Nuevo pedido creado - ID: " + guardado.getId() +
+                " | Cliente: " + (guardado.getCliente() != null ? guardado.getCliente().getNombre() : "Desconocido") +
+                " | Total: " + guardado.getTotal() + " Bs");
+        alerta.setLeida(Boolean.FALSE);
+        alertaRepository.save(alerta);
 
         return pedidoRepository.findById(guardado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
