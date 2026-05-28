@@ -5,12 +5,14 @@ import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Lote;
 import com.ucb.farmago.backend.services.LoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "Lotes")
 @RestController
 @RequestMapping("/api/lotes")
 @CrossOrigin(origins = "*")

@@ -7,6 +7,7 @@ import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "Pedidos")
 @RestController
 @RequestMapping("/api/pedidos")
 @CrossOrigin(origins = "*")

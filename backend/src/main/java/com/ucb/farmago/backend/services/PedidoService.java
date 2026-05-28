@@ -5,9 +5,11 @@ import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
+import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
+import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,9 @@ public class PedidoService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -37,8 +42,15 @@ public class PedidoService {
     }
 
     public Pedido crear(Pedido pedido) {
-        pedido.setEstado("Pendiente");
-        return pedidoRepository.save(pedido);
+        if (pedido.getCliente() != null && pedido.getCliente().getId() != null) {
+            Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+            pedido.setCliente(cliente);
+        }
+        pedido.setEstado("PENDIENTE");
+        Pedido guardado = pedidoRepository.save(pedido);
+        return pedidoRepository.findById(guardado.getId())
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
     public Pedido actualizarEstado(Long id, String estado) {

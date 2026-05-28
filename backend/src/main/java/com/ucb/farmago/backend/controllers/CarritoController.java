@@ -2,10 +2,12 @@ package com.ucb.farmago.backend.controllers;
 
 import com.ucb.farmago.backend.dto.CarritoDTO;
 import com.ucb.farmago.backend.services.CarritoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Carrito")
 @RestController
 @RequestMapping("/api/carrito")
 @CrossOrigin(origins = "*")

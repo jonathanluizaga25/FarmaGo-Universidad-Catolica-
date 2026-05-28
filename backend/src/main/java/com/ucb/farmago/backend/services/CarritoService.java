@@ -32,7 +32,7 @@ public class CarritoService {
                 });
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Carrito verCarrito(Long clienteId) {
         return obtenerOCrearCarrito(clienteId);
     }
