@@ -3,9 +3,11 @@ package com.ucb.farmago.backend.services;
 import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
 import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
+import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.repositories.AlertaRepository;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
@@ -32,6 +34,9 @@ public class PedidoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private AlertaRepository alertaRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -49,6 +54,16 @@ public class PedidoService {
         }
         pedido.setEstado("PENDIENTE");
         Pedido guardado = pedidoRepository.save(pedido);
+
+        // Alerta al administrador cuando se crea un nuevo pedido
+        Alerta alerta = new Alerta();
+        alerta.setTipo("NUEVO_PEDIDO");
+        alerta.setMensaje("Nuevo pedido creado - ID: " + guardado.getId() +
+                " | Cliente: " + (guardado.getCliente() != null ? guardado.getCliente().getNombre() : "Desconocido") +
+                " | Total: " + guardado.getTotal() + " Bs");
+        alerta.setLeida(Boolean.FALSE);
+        alertaRepository.save(alerta);
+
         return pedidoRepository.findById(guardado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
@@ -111,7 +126,7 @@ public class PedidoService {
             pedido.setEstado("RECHAZADO_DEVOLUCION");
             pedidoRepository.save(pedido);
             return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                    "Discrepancia: La cantidad de ítems en la factura (" +
+                    "Discrepancia: La cantidad de items en la factura (" +
                             (facturaDTO.getItems() != null ? facturaDTO.getItems().size() : 0) +
                             ") no coincide con el pedido original (" + detallesOriginales.size() + ").");
         }
@@ -150,7 +165,7 @@ public class PedidoService {
 
         pedido.setEstado("RECIBIDO");
         pedidoRepository.save(pedido);
-        return new ResultadoValidacionDTO("RECIBIDO", "Validación exitosa. La factura coincide con el pedido.");
+        return new ResultadoValidacionDTO("RECIBIDO", "Validacion exitosa. La factura coincide con el pedido.");
     }
 
     @Transactional(readOnly = true)
@@ -162,4 +177,3 @@ public class PedidoService {
         }).collect(Collectors.toList());
     }
 }
-
