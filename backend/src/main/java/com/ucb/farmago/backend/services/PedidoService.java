@@ -5,9 +5,11 @@ import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
+import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
+import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,9 @@ public class PedidoService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -37,8 +42,15 @@ public class PedidoService {
     }
 
     public Pedido crear(Pedido pedido) {
-        pedido.setEstado("Pendiente");
-        return pedidoRepository.save(pedido);
+        if (pedido.getCliente() != null && pedido.getCliente().getId() != null) {
+            Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+            pedido.setCliente(cliente);
+        }
+        pedido.setEstado("PENDIENTE");
+        Pedido guardado = pedidoRepository.save(pedido);
+        return pedidoRepository.findById(guardado.getId())
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
     public Pedido actualizarEstado(Long id, String estado) {
@@ -59,7 +71,6 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado);
     }
 
-    // HU-10: Calcula el costo de envio segun la direccion del cliente
     public BigDecimal calcularCostoEnvio(String direccion) {
         if (direccion == null || direccion.isEmpty()) {
             return new BigDecimal("15");
@@ -99,7 +110,7 @@ public class PedidoService {
             pedido.setEstado("RECHAZADO_DEVOLUCION");
             pedidoRepository.save(pedido);
             return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                    "Discrepancia: La cantidad de ítems en la factura (" +
+                    "Discrepancia: La cantidad de items en la factura (" +
                             (facturaDTO.getItems() != null ? facturaDTO.getItems().size() : 0) +
                             ") no coincide con el pedido original (" + detallesOriginales.size() + ").");
         }
@@ -138,7 +149,7 @@ public class PedidoService {
 
         pedido.setEstado("RECIBIDO");
         pedidoRepository.save(pedido);
-        return new ResultadoValidacionDTO("RECIBIDO", "Validación exitosa. La factura coincide con el pedido.");
+        return new ResultadoValidacionDTO("RECIBIDO", "Validacion exitosa. La factura coincide con el pedido.");
     }
 
     @Transactional(readOnly = true)
@@ -150,4 +161,3 @@ public class PedidoService {
         }).collect(Collectors.toList());
     }
 }
-
