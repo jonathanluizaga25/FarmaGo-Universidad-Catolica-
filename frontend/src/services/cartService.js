@@ -1,85 +1,52 @@
-export const getCart = () => {
-  if (typeof window === "undefined") return [];
+const API = 'http://localhost:8080/api/carrito';
 
-  try {
-    const cart = localStorage.getItem("cart");
-    return cart ? JSON.parse(cart) : [];
-  } catch (error) {
-    console.error("Error leyendo carrito:", error);
-    return [];
+function getClienteId() {
+  if (typeof window === 'undefined') return null;
+  const u = localStorage.getItem('usuario');
+  if (!u) return null;
+  return JSON.parse(u).id;
+}
+
+export async function getCart() {
+  const clienteId = getClienteId();
+  if (!clienteId) return null;
+  const res = await fetch(`${API}/${clienteId}`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export async function addToCart(product) {
+  const clienteId = getClienteId();
+  if (!clienteId) {
+    alert('Debes iniciar sesión para agregar productos al carrito.');
+    return false;
   }
-};
-
-export const saveCart = (cart) => {
-  localStorage.setItem("cart", JSON.stringify(cart));
-};
-
-export const addToCart = (product) => {
-  const cart = getCart();
-
-  const existingProduct = cart.find(
-    (item) => item.id === product.id
+  const res = await fetch(
+    `${API}/${clienteId}/agregar?productoId=${product.id}&cantidad=1`,
+    { method: 'POST' }
   );
+  return res.ok;
+}
 
-  if (existingProduct) {
-
-    if (existingProduct.quantity < existingProduct.stock) {
-      existingProduct.quantity += 1;
-    }
-
-  } else {
-
-    cart.push({
-      id: product.id,
-      nombre: product.nombre,
-      precio: product.precio,
-      imagen: product.imagen,
-      stock: product.stock,
-      quantity: 1,
-    });
-
-  }
-
-  saveCart(cart);
-};
-
-export const removeFromCart = (id) => {
-  const updatedCart = getCart().filter(
-    (item) => item.id !== id
+export async function updateQuantity(productoId, cantidad) {
+  const clienteId = getClienteId();
+  if (!clienteId) return;
+  await fetch(
+    `${API}/${clienteId}/modificar/${productoId}?cantidad=${cantidad}`,
+    { method: 'PUT' }
   );
+}
 
-  saveCart(updatedCart);
-};
-
-export const updateQuantity = (id, quantity) => {
-
-  const updatedCart = getCart().map((item) => {
-
-    if (item.id === id) {
-
-      return {
-        ...item,
-        quantity: Math.min(item.stock, Math.max(1, quantity)),
-      };
-
-    }
-
-    return item;
+export async function removeFromCart(productoId) {
+  const clienteId = getClienteId();
+  if (!clienteId) return;
+  await fetch(`${API}/${clienteId}/quitar/${productoId}`, {
+    method: 'DELETE',
   });
+}
 
-  saveCart(updatedCart);
-};
-
-export const clearCart = () => {
-  localStorage.removeItem("cart");
-};
-
-export const getCartTotal = () => {
-  const cart = getCart();
-
-  return cart.reduce(
-    (total, item) =>
-      total + item.precio * item.quantity,
-    0
-  );
-};
+export async function clearCart() {
+  const clienteId = getClienteId();
+  if (!clienteId) return;
+  await fetch(`${API}/${clienteId}/vaciar`, { method: 'DELETE' });
+}
