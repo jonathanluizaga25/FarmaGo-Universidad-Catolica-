@@ -3,9 +3,11 @@ package com.ucb.farmago.backend.services;
 import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
 import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
+import com.ucb.farmago.backend.models.Carrito;
 import com.ucb.farmago.backend.models.DetallePedido;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.repositories.CarritoRepository;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
@@ -32,6 +34,9 @@ public class PedidoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private CarritoRepository carritoRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -41,14 +46,44 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
+    @Transactional
     public Pedido crear(Pedido pedido) {
-        if (pedido.getCliente() != null && pedido.getCliente().getId() != null) {
-            Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
-                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-            pedido.setCliente(cliente);
+        if (pedido.getCliente() == null || pedido.getCliente().getId() == null) {
+            throw new RuntimeException("Se requiere un cliente para crear el pedido");
         }
+        Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        pedido.setCliente(cliente);
         pedido.setEstado("PENDIENTE");
+
+        // Leer el carrito activo del cliente
+        Carrito carrito = carritoRepository.findByClienteIdAndEstado(cliente.getId(), "ACTIVO")
+                .orElseThrow(() -> new RuntimeException("El carrito está vacío"));
+
+        if (carrito.getItems() == null || carrito.getItems().isEmpty()) {
+            throw new RuntimeException("El carrito está vacío");
+        }
+
         Pedido guardado = pedidoRepository.save(pedido);
+
+        // Crear un DetallePedido por cada item del carrito y descontar stock
+        for (var item : carrito.getItems()) {
+            DetallePedido detalle = new DetallePedido();
+            detalle.setPedido(guardado);
+            detalle.setProducto(item.getProducto());
+            detalle.setCantidad(item.getCantidad());
+            detalle.setPrecioUnitario(item.getPrecioUnitario());
+            detallePedidoRepository.save(detalle);
+
+            var producto = item.getProducto();
+            producto.setStockActual(producto.getStockActual() - item.getCantidad());
+            productoRepository.save(producto);
+        }
+
+        // Vaciar el carrito
+        carrito.getItems().clear();
+        carritoRepository.save(carrito);
+
         return pedidoRepository.findById(guardado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }

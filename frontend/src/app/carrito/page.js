@@ -1,149 +1,113 @@
 "use client";
 
 import "./page.css";
-
 import { useEffect, useState } from "react";
-
-import {
-  getCart,
-  removeFromCart,
-  updateQuantity,
-} from "../../services/cartService";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { getCart, updateQuantity, removeFromCart } from "../../services/cartService";
 
 export default function CarritoPage() {
-
-  const [cart, setCart] = useState([]);
+  const router  = useRouter();
+  const [carrito, setCarrito]   = useState(null);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    setCart(getCart());
+    const u = localStorage.getItem('usuario');
+    if (!u) { router.push('/login'); return; }
+    cargarCarrito();
   }, []);
 
-  const refreshCart = () => {
-    setCart(getCart());
-  };
+  async function cargarCarrito() {
+    setCargando(true);
+    const data = await getCart();
+    setCarrito(data);
+    setCargando(false);
+  }
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.precio * item.quantity,
-    0
-  );
+  async function handleCantidad(productoId, nuevaCantidad) {
+    if (nuevaCantidad < 1) return;
+    await updateQuantity(productoId, nuevaCantidad);
+    cargarCarrito();
+  }
+
+  async function handleEliminar(productoId) {
+    await removeFromCart(productoId);
+    cargarCarrito();
+  }
+
+  if (cargando) {
+    return (
+      <main className="carrito-container">
+        <h1 className="carrito-title">Carrito de Compras</h1>
+        <p style={{ textAlign: 'center', color: '#888', padding: '2rem' }}>Cargando carrito...</p>
+      </main>
+    );
+  }
+
+  const items = carrito?.items || [];
+  const total = carrito?.total || 0;
 
   return (
     <main className="carrito-container">
+      <h1 className="carrito-title">Carrito de Compras</h1>
 
-      <h1 className="carrito-title">
-        Carrito de Compras
-      </h1>
-
-      {cart.length === 0 ? (
-
+      {items.length === 0 ? (
         <div className="empty-cart">
           <p>Tu carrito está vacío.</p>
         </div>
-
       ) : (
-
         <>
           <div className="cart-list">
-
-            {cart.map((item) => (
-
-              <div
-                key={item.id}
-                className="cart-item"
-              >
-
-                <img
-                  src={item.imagen}
-                  alt={item.nombre}
-                  className="cart-image"
-                />
+            {items.map((item) => (
+              <div key={item.id} className="cart-item">
 
                 <div className="cart-info">
-
-                  <h3>{item.nombre}</h3>
+                  <h3>{item.nombreProducto}</h3>
 
                   <p className="cart-price">
-                    Bs. {item.precio}
-                  </p>
-
-                  <p className="cart-stock">
-                    Stock disponible: {item.stock}
+                    Bs. {item.precioUnitario}
                   </p>
 
                   <div className="quantity-controls">
-
                     <button
                       className="quantity-btn"
-                      onClick={() => {
-                        updateQuantity(
-                          item.id,
-                          item.quantity - 1
-                        );
-                        refreshCart();
-                      }}
+                      onClick={() => handleCantidad(item.productoId, item.cantidad - 1)}
                     >
                       -
                     </button>
-
-                    <span className="quantity-value">
-                      {item.quantity}
-                    </span>
-
+                    <span className="quantity-value">{item.cantidad}</span>
                     <button
                       className="quantity-btn"
-                      onClick={() => {
-                        updateQuantity(
-                          item.id,
-                          item.quantity + 1
-                        );
-                        refreshCart();
-                      }}
-                      disabled={item.quantity >= item.stock}
+                      onClick={() => handleCantidad(item.productoId, item.cantidad + 1)}
                     >
                       +
                     </button>
-
                   </div>
 
                   <p className="subtotal">
-                    Subtotal:
-                    {" "}
-                    Bs. {item.precio * item.quantity}
+                    Subtotal: Bs. {item.subtotal}
                   </p>
 
                   <button
                     className="remove-btn"
-                    onClick={() => {
-                      removeFromCart(item.id);
-                      refreshCart();
-                    }}
+                    onClick={() => handleEliminar(item.productoId)}
                   >
                     Eliminar
                   </button>
-
                 </div>
 
               </div>
-
             ))}
-
           </div>
 
           <div className="cart-summary">
-
-            <h2 className="total">
-              Total: Bs. {total}
-            </h2>
-
-            <button className="checkout-btn">
-              Confirmar Pedido
-            </button>
-
+            <h2 className="total">Total: Bs. {total}</h2>
+            <Link href="/checkout">
+              <button className="checkout-btn">Confirmar Pedido →</button>
+            </Link>
           </div>
         </>
-
       )}
-
     </main>
   );
 }

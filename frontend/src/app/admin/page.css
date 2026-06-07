@@ -1,0 +1,360 @@
+/* ═══════════════════════════════════════════
+   WRAPPER GENERAL
+═══════════════════════════════════════════ */
+.admin-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   ENCABEZADO
+═══════════════════════════════════════════ */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-titulo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0d1b3e;
+  margin: 0 0 4px 0;
+}
+
+.admin-subtitulo {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.btn-nuevo {
+  background: #0d1b3e;
+  color: #e8b800;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.btn-nuevo:hover {
+  opacity: 0.85;
+}
+
+/* ═══════════════════════════════════════════
+   TABLA
+═══════════════════════════════════════════ */
+.tabla-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.tabla thead {
+  background: #0d1b3e;
+  color: white;
+}
+
+.tabla th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+}
+
+.tabla td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.tabla tbody tr:hover {
+  background: #f8faff;
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Fila con stock bajo */
+.fila-stock-bajo {
+  background: #fff5f5;
+}
+
+.fila-stock-bajo:hover {
+  background: #ffe8e8 !important;
+}
+
+/* ═══════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════ */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.badge-otc {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-etico {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+/* ═══════════════════════════════════════════
+   BOTONES DE ACCIÓN EN LA TABLA
+═══════════════════════════════════════════ */
+.col-acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-editar,
+.btn-eliminar {
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-editar {
+  background: #e8b800;
+  color: #0d1b3e;
+}
+
+.btn-eliminar {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-editar:hover,
+.btn-eliminar:hover {
+  opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════
+   ESTADO DE CARGA
+═══════════════════════════════════════════ */
+.cargando {
+  text-align: center;
+  color: #6b7280;
+  padding: 60px 0;
+  font-size: 1rem;
+}
+
+/* ═══════════════════════════════════════════
+   OVERLAY Y MODAL
+═══════════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;                      /* top/right/bottom/left: 0 */
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Encabezado del modal ── */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0d1b3e;
+  margin: 0;
+}
+
+.btn-cerrar {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.btn-cerrar:hover {
+  background: #f3f4f6;
+  color: #111;
+}
+
+/* ── Cuerpo del modal ── */
+.modal-body {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Campos que ocupan todo el ancho */
+.campo-full {
+  grid-column: 1 / -1;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo span {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 9px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #111827;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: #0d1b3e;
+  background: white;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+/* ── Pie del modal ── */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-cancelar {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancelar:hover {
+  background: #e5e7eb;
+}
+
+.btn-guardar {
+  background: #0d1b3e;
+  color: #e8b800;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-guardar:hover {
+  opacity: 0.85;
+}
+
+.btn-guardar:disabled,
+.btn-cancelar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Mensaje de error en el modal ── */
+.error-msg {
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 10px 16px;
+  margin: 0 24px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-full {
+    grid-column: 1;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-nuevo {
+    width: 100%;
+    text-align: center;
+  }
+}

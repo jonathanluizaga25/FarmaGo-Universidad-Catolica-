@@ -34,7 +34,7 @@ export default function LoginPage() {
 
       const usuario = await res.json();
       localStorage.setItem('usuario', JSON.stringify(usuario));
-      router.push('/catalogo');
+      router.push(usuario.rol === 'ADMIN' ? '/admin' : '/catalogo');
     } catch (e) {
       setError('Error al conectar con el servidor');
     } finally {
