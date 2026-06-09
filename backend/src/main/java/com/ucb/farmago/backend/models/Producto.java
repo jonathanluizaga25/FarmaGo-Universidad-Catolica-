@@ -21,9 +21,9 @@ public class Producto {
     private BigDecimal precio;
 
     private String imagenUrl;
-    private String categoria;
 
-    @Column(nullable = false)
+    // BUG FIX: Mapeamos la variable 'tipo' directamente a la columna 'categoria' de la BD
+    @Column(name = "categoria", nullable = false)
     private String tipo = "OTC";
 
     @Column(name = "stock_minimo")
@@ -50,9 +50,6 @@ public class Producto {
 
     public String getImagenUrl() { return imagenUrl; }
     public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
-
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
