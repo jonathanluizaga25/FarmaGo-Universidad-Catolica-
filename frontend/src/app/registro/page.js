@@ -124,7 +124,11 @@ export default function RegistroPage() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+<<<<<<< HEAD
         <h1 className={styles.title}>Registro de cuenta</h1>
+=======
+        <h1 className={styles.title}>Registro FarmaGo</h1>
+>>>>>>> origin/main
 
         <div className={styles.card}>
           <div className={styles.logoContainer}>

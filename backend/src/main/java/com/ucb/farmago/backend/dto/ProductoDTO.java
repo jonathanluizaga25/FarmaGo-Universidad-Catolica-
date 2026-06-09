@@ -11,14 +11,21 @@ public class ProductoDTO {
     private BigDecimal precio;
     private String imagenUrl;
     private String categoria;
+<<<<<<< HEAD
+=======
+    private String tipo;
+>>>>>>> origin/main
     private Integer stockMinimo;
     private ProveedorDTO laboratorio;
     private Integer stockActual;
 
+<<<<<<< HEAD
     public Integer getStockActual() { 
         return stockActual; 
     }
 
+=======
+>>>>>>> origin/main
     public ProductoDTO(Producto producto) {
         this.id = producto.getId();
         this.nombre = producto.getNombre();
@@ -26,6 +33,10 @@ public class ProductoDTO {
         this.precio = producto.getPrecio();
         this.imagenUrl = producto.getImagenUrl();
         this.categoria = producto.getCategoria();
+<<<<<<< HEAD
+=======
+        this.tipo = producto.getTipo();
+>>>>>>> origin/main
         this.stockMinimo = producto.getStockMinimo();
         this.stockActual = producto.getStockActual();
         this.laboratorio = producto.getLaboratorio() != null ? new ProveedorDTO(producto.getLaboratorio()) : null;
@@ -37,6 +48,14 @@ public class ProductoDTO {
     public BigDecimal getPrecio() { return precio; }
     public String getImagenUrl() { return imagenUrl; }
     public String getCategoria() { return categoria; }
+<<<<<<< HEAD
     public Integer getStockMinimo() { return stockMinimo; }
     public ProveedorDTO getLaboratorio() { return laboratorio; }
 }
+=======
+    public String getTipo() { return tipo; }
+    public Integer getStockMinimo() { return stockMinimo; }
+    public Integer getStockActual() { return stockActual; }
+    public ProveedorDTO getLaboratorio() { return laboratorio; }
+}
+>>>>>>> origin/main

@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
 package com.ucb.farmago.backend.controllers;
 
 import com.ucb.farmago.backend.dto.PedidoRepartidorDTO;
 import com.ucb.farmago.backend.services.RepartidorService;
+<<<<<<< HEAD
+=======
+import io.swagger.v3.oas.annotations.tags.Tag;
+>>>>>>> origin/main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
+=======
+@Tag(name = "Repartidor")
+>>>>>>> origin/main
 @RestController
 @RequestMapping("/api/repartidor")
 @CrossOrigin(origins = "*")

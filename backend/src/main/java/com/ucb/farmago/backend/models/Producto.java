@@ -23,6 +23,12 @@ public class Producto {
     private String imagenUrl;
     private String categoria;
 
+<<<<<<< HEAD
+=======
+    @Column(nullable = false)
+    private String tipo = "OTC";
+
+>>>>>>> origin/main
     @Column(name = "stock_minimo")
     private Integer stockMinimo;
 
@@ -51,6 +57,12 @@ public class Producto {
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
 
+<<<<<<< HEAD
+=======
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+>>>>>>> origin/main
     public Integer getStockMinimo() { return stockMinimo; }
     public void setStockMinimo(Integer stockMinimo) { this.stockMinimo = stockMinimo; }
 

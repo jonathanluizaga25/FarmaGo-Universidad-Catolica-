@@ -1,9 +1,20 @@
 package com.ucb.farmago.backend.controllers;
 
+<<<<<<< HEAD
 import com.ucb.farmago.backend.dto.PedidoDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+=======
+import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
+import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
+import com.ucb.farmago.backend.dto.PedidoDTO;
+import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
+import com.ucb.farmago.backend.models.Pedido;
+import com.ucb.farmago.backend.services.PedidoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+>>>>>>> origin/main
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +22,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+@Tag(name = "Pedidos")
+>>>>>>> origin/main
 @RestController
 @RequestMapping("/api/pedidos")
 @CrossOrigin(origins = "*")
@@ -75,4 +90,37 @@ public class PedidoController {
     public ResponseEntity<BigDecimal> calcularCostoEnvio(@RequestParam String direccion) {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
     }
+<<<<<<< HEAD
 }
+=======
+
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<?> cancelar(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new PedidoDTO(pedidoService.cancelar(id)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/validar-factura")
+    public ResponseEntity<ResultadoValidacionDTO> validarFactura(@RequestBody FacturaValidacionDTO facturaDTO) {
+        try {
+            return ResponseEntity.ok(pedidoService.validarFacturaVsPedido(facturaDTO));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResultadoValidacionDTO("ERROR", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/cliente/{clienteId}/historial")
+    public ResponseEntity<List<HistorialPedidoDTO>> obtenerHistorialCompras(@PathVariable Long clienteId) {
+        List<HistorialPedidoDTO> historial = pedidoService.obtenerHistorialCliente(clienteId);
+        if (historial.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(historial);
+    }
+}
+
+>>>>>>> origin/main

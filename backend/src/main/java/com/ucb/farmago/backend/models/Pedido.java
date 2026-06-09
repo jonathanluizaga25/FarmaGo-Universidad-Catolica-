@@ -1,7 +1,10 @@
 package com.ucb.farmago.backend.models;
 
 import jakarta.persistence.*;
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonProperty;
+=======
+>>>>>>> origin/main
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -65,6 +68,7 @@ public class Pedido {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+<<<<<<< HEAD
 
     @Transient
     private Double valorDolares;
@@ -80,3 +84,6 @@ public class Pedido {
     public Double getValorBolivianos() { return valorBolivianos; }
     public void setValorBolivianos(Double valorBolivianos) { this.valorBolivianos = valorBolivianos; }
 }
+=======
+}
+>>>>>>> origin/main

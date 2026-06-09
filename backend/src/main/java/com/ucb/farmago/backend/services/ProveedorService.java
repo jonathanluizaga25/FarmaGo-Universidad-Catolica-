@@ -34,6 +34,12 @@ public class ProveedorService {
     }
 
     public void eliminar(Long id) {
+<<<<<<< HEAD
+=======
+        if (!proveedorRepository.existsById(id)) {
+            throw new RuntimeException("Proveedor no encontrado");
+        }
+>>>>>>> origin/main
         proveedorRepository.deleteById(id);
     }
 }

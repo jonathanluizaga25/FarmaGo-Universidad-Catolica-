@@ -1,20 +1,33 @@
 'use client';
 
 import { useState } from 'react';
+<<<<<<< HEAD
+=======
+import { useRouter } from 'next/navigation';
+>>>>>>> origin/main
 import styles from './login.module.css';
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd]   = useState(false);
+<<<<<<< HEAD
   const [remember, setRemember] = useState(false);
   const [error, setError]       = useState('');
 
   const handleLogin = () => {
+=======
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
+  const router = useRouter();
+
+  const handleLogin = async () => {
+>>>>>>> origin/main
     if (!email || !password) {
       setError('Se tiene que llenar todos los campos.');
       return;
     }
+<<<<<<< HEAD
     // llamada al backend para el correo y registro de usuario aqui 
     // esta para el futuro, por ahora es un demo con un correo y contraseña predefinidos
     if (email !== 'demo@farmago.com' || password !== '1234') {
@@ -23,6 +36,31 @@ export default function LoginPage() {
     }
     setError('');
     alert('¡Bienvenido a FarmaGO! ✓');
+=======
+
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        setError(msg);
+        return;
+      }
+
+      const usuario = await res.json();
+      localStorage.setItem('usuario', JSON.stringify(usuario));
+      router.push(usuario.rol === 'ADMIN' ? '/admin' : '/catalogo');
+    } catch (e) {
+      setError('Error al conectar con el servidor');
+    } finally {
+      setLoading(false);
+    }
+>>>>>>> origin/main
   };
 
   return (
@@ -30,7 +68,10 @@ export default function LoginPage() {
       <main className={styles.main}>
         <div className={styles.card}>
 
+<<<<<<< HEAD
           {/* Logo*/}
+=======
+>>>>>>> origin/main
           <div className={styles.cardLogo}>
            <img src="/logo.png" alt="FarmaGO Logo" className={styles.logoImg} />
           </div>
@@ -39,10 +80,15 @@ export default function LoginPage() {
             Accede a tu cuenta de <strong>Farma<span className={styles.gold}>GO</span></strong>
           </p>
 
+<<<<<<< HEAD
           {/* Error */}
           {error && <div className={styles.errorMsg}>{error}</div>}
 
           {/* Email */}
+=======
+          {error && <div className={styles.errorMsg}>{error}</div>}
+
+>>>>>>> origin/main
           <div className={styles.field}>
             <label className={styles.label} htmlFor="email">Correo electrónico</label>
             <div className={styles.inputWrap}>
@@ -64,7 +110,10 @@ export default function LoginPage() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Password */}
+=======
+>>>>>>> origin/main
           <div className={styles.field}>
             <label className={styles.label} htmlFor="password">Contraseña</label>
             <div className={styles.inputWrap}>
@@ -107,20 +156,39 @@ export default function LoginPage() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* boton de login*/}
           <button className={styles.btnLogin} onClick={handleLogin}>
             Iniciar sesión
+=======
+          <button
+            className={styles.btnLogin}
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+>>>>>>> origin/main
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"/>
               <polyline points="12 5 19 12 12 19"/>
             </svg>
           </button>
+<<<<<<< HEAD
           <p className={styles.registerLink}>
             ¿No tienes cuenta? <a href="#">Crear cuenta</a>
+=======
+
+          <p className={styles.registerLink}>
+            ¿No tienes cuenta? <a href="/registro">Crear cuenta</a>
+>>>>>>> origin/main
           </p>
         </div>
       </main>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

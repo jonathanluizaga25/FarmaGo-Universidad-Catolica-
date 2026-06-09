@@ -16,6 +16,13 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+<<<<<<< HEAD
+=======
+    public List<Producto> listarOtc() {
+        return productoRepository.findByTipo("OTC");
+    }
+
+>>>>>>> origin/main
     public Producto obtenerPorId(Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -32,6 +39,10 @@ public class ProductoService {
         existente.setPrecio(producto.getPrecio());
         existente.setImagenUrl(producto.getImagenUrl());
         existente.setCategoria(producto.getCategoria());
+<<<<<<< HEAD
+=======
+        existente.setTipo(producto.getTipo());
+>>>>>>> origin/main
         existente.setStockMinimo(producto.getStockMinimo());
         existente.setStockActual(producto.getStockActual());
         return productoRepository.save(existente);
@@ -44,4 +55,8 @@ public class ProductoService {
     public List<Producto> listarPorCategoria(String categoria) {
         return productoRepository.findByCategoria(categoria);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

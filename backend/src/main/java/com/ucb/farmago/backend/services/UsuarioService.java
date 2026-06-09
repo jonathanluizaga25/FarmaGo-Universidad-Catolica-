@@ -22,4 +22,16 @@ public class UsuarioService {
         usuario.setRol("CLIENTE");
         return usuarioRepository.save(usuario);
     }
+<<<<<<< HEAD
+=======
+
+    public Usuario login(String email, String password) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Correo o contraseña incorrectos"));
+        if (!passwordEncoder.matches(password, usuario.getPasswordHash())) {
+            throw new RuntimeException("Correo o contraseña incorrectos");
+        }
+        return usuario;
+    }
+>>>>>>> origin/main
 }

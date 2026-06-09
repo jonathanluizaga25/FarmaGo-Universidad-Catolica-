@@ -1,11 +1,19 @@
 package com.ucb.farmago.backend.controllers;
 import com.ucb.farmago.backend.models.Descuento;
 import com.ucb.farmago.backend.services.DescuentoService;
+<<<<<<< HEAD
+=======
+import io.swagger.v3.oas.annotations.tags.Tag;
+>>>>>>> origin/main
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+@Tag(name = "Descuentos")
+>>>>>>> origin/main
 @RestController
 @RequestMapping("/api/descuentos")
 @CrossOrigin(origins = "*")

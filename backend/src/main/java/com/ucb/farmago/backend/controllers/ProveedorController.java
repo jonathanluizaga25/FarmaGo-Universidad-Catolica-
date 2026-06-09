@@ -4,12 +4,20 @@ import com.ucb.farmago.backend.dto.ProveedorDTO;
 import com.ucb.farmago.backend.models.Proveedor;
 import com.ucb.farmago.backend.services.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
+=======
+import io.swagger.v3.oas.annotations.tags.Tag;
+>>>>>>> origin/main
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+@Tag(name = "Proveedores")
+>>>>>>> origin/main
 @RestController
 @RequestMapping("/api/proveedores")
 @CrossOrigin(origins = "*")

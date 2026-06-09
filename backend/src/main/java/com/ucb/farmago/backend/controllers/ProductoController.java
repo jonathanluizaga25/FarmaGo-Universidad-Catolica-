@@ -4,12 +4,20 @@ import com.ucb.farmago.backend.dto.ProductoDTO;
 import com.ucb.farmago.backend.models.Producto;
 import com.ucb.farmago.backend.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
+=======
+import io.swagger.v3.oas.annotations.tags.Tag;
+>>>>>>> origin/main
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+@Tag(name = "Productos")
+>>>>>>> origin/main
 @RestController
 @RequestMapping("/api/productos")
 @CrossOrigin(origins = "*")
@@ -25,6 +33,16 @@ public class ProductoController {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
+=======
+    @GetMapping("/otc")
+    public List<ProductoDTO> listarOtc() {
+        return productoService.listarOtc().stream()
+                .map(ProductoDTO::new)
+                .collect(Collectors.toList());
+    }
+
+>>>>>>> origin/main
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
         try {
@@ -36,7 +54,12 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoDTO> crear(@RequestBody Producto producto) {
+<<<<<<< HEAD
         return ResponseEntity.status(HttpStatus.CREATED).body(new ProductoDTO(productoService.crear(producto)));
+=======
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ProductoDTO(productoService.crear(producto)));
+>>>>>>> origin/main
     }
 
     @PutMapping("/{id}")

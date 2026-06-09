@@ -1,5 +1,9 @@
 package com.ucb.farmago.backend.dto;
+<<<<<<< HEAD
 import com.ucb.farmago.backend.dto.DetallePedidoDTO;
+=======
+
+>>>>>>> origin/main
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Entrega;
 import java.math.BigDecimal;
@@ -72,4 +76,8 @@ public class PedidoRepartidorDTO {
     public LocalDateTime getFechaEntrega() { return fechaEntrega; }
     public Boolean getEntregaExitosa() { return entregaExitosa; }
     public List<DetallePedidoDTO> getProductos() { return productos; }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main
