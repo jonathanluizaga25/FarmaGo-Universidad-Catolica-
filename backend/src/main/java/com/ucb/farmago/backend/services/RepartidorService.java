@@ -10,7 +10,7 @@ import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.ucb.farmago.backend.dto.DetallePedidoDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 

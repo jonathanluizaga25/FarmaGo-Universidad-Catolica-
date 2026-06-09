@@ -1,11 +1,14 @@
 package com.ucb.farmago.backend.services;
+
 import com.ucb.farmago.backend.models.Caja;
 import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.CajaRepository;
 import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -20,20 +23,28 @@ public class CajaService {
     }
 
     public Caja abrirCaja(Long cajeroId, String turno) {
-        List<Caja> abiertas = cajaRepository.findByCerrado(false);
-        boolean tieneAbierta = abiertas.stream().anyMatch(c -> c.getCajero().getId().equals(cajeroId));
-        if (tieneAbierta) {
+        List<String> turnosValidos = Arrays.asList("MANANA", "TARDE", "NOCHE", "DIA_COMPLETO");
+        String turnoLimpio = turno.toUpperCase().trim();
+        
+        if (!turnosValidos.contains(turnoLimpio)) {
+            throw new RuntimeException("Turno inválido. Solo se permite: MANANA, TARDE, NOCHE o DIA_COMPLETO");
+        }
+
+        if (cajaRepository.existsByCajeroIdAndCerradoFalse(cajeroId)) {
             throw new RuntimeException("El cajero ya tiene una caja abierta. Debe cerrarla antes de abrir una nueva.");
         }
+
         Usuario cajero = usuarioRepository.findById(cajeroId)
                 .orElseThrow(() -> new RuntimeException("Cajero no encontrado"));
+
         Caja caja = new Caja();
         caja.setCajero(cajero);
         caja.setFecha(LocalDate.now());
-        caja.setTurno(turno);
+        caja.setTurno(turnoLimpio); 
         caja.setTotalEfectivo(BigDecimal.ZERO);
         caja.setTotalQr(BigDecimal.ZERO);
         caja.setCerrado(false);
+
         return cajaRepository.save(caja);
     }
 
@@ -41,7 +52,7 @@ public class CajaService {
         Caja caja = cajaRepository.findById(cajaId)
                 .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
         if (caja.getCerrado()) {
-            throw new RuntimeException("La caja ya esta cerrada.");
+            throw new RuntimeException("La caja ya está cerrada.");
         }
         caja.setTotalEfectivo(caja.getTotalEfectivo().add(montoEfectivo));
         caja.setTotalQr(caja.getTotalQr().add(montoQr));
@@ -52,7 +63,7 @@ public class CajaService {
         Caja caja = cajaRepository.findById(cajaId)
                 .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
         if (caja.getCerrado()) {
-            throw new RuntimeException("La caja ya esta cerrada.");
+            throw new RuntimeException("La caja ya está cerrada.");
         }
         caja.setCerrado(true);
         return cajaRepository.save(caja);

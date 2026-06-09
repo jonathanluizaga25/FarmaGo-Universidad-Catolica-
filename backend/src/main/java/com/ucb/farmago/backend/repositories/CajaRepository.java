@@ -9,4 +9,7 @@ import java.util.List;
 public interface CajaRepository extends JpaRepository<Caja, Long> {
     List<Caja> findByCajeroId(Long cajeroId);
     List<Caja> findByCerrado(Boolean cerrado);
+    
+    
+    boolean existsByCajeroIdAndCerradoFalse(Long cajeroId);
 }

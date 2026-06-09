@@ -1,5 +1,5 @@
 package com.ucb.farmago.backend.dto;
-
+import com.ucb.farmago.backend.dto.DetallePedidoDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Entrega;
 import java.math.BigDecimal;

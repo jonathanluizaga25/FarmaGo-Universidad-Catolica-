@@ -1,5 +1,7 @@
 package com.ucb.farmago.backend.services;
 
+import com.ucb.farmago.backend.models.LogPedido;
+import com.ucb.farmago.backend.repositories.LogPedidoRepository;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,29 @@ import java.util.List;
 public class PedidoService {
 
     @Autowired
+    private LogPedidoRepository logPedidoRepository;
+
+    @Autowired
     private PedidoRepository pedidoRepository;
+
+    public Pedido crear(Pedido pedido) {
+        pedido.setCreatedAt(java.time.LocalDateTime.now());
+        pedido.setEstado("Pendiente");
+        
+        Double dolares = pedido.getValorDolares();
+        
+        Pedido pedidoGuardado = pedidoRepository.save(pedido);
+
+        if (dolares != null) {
+            LogPedido log = new LogPedido(pedidoGuardado.getId(), dolares);
+            logPedidoRepository.save(log);
+            
+            pedidoGuardado.setValorDolares(dolares);
+            pedidoGuardado.setValorBolivianos(Math.round((dolares * 6.96) * 100.0) / 100.0);
+        }
+
+        return pedidoGuardado;
+    }
 
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
@@ -22,11 +46,6 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
-   public Pedido crear(Pedido pedido) {
-    
-    pedido.setEstado("Pendiente");
-    return pedidoRepository.save(pedido);
-    }
     public Pedido actualizarEstado(Long id, String estado) {
         Pedido pedido = obtenerPorId(id);
         pedido.setEstado(estado);
@@ -45,21 +64,20 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado);
     }
 
-    // HU-10: Calcula el costo de envio segun la direccion del cliente
     public BigDecimal calcularCostoEnvio(String direccion) {
         if (direccion == null || direccion.isEmpty()) {
             return new BigDecimal("15");
         }
         String dir = direccion.toLowerCase();
-        // Zona central: envio gratuito
+        
         if (dir.contains("centro") || dir.contains("central")) {
             return BigDecimal.ZERO;
         }
-        // Zona norte o sur: costo medio
+        
         if (dir.contains("norte") || dir.contains("sur")) {
             return new BigDecimal("10");
         }
-        // Zona lejana: costo mayor
+        
         return new BigDecimal("15");
     }
 }
