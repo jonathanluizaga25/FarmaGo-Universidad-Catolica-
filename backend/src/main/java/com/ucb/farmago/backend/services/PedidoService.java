@@ -15,6 +15,7 @@ import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,15 +125,19 @@ public class PedidoService {
     @Transactional
     public Pedido cancelar(Long id) {
         Pedido pedido = obtenerPorId(id);
-        if (!"Pendiente".equalsIgnoreCase(pedido.getEstado())) {
-            throw new RuntimeException("Solo se pueden cancelar pedidos en estado Pendiente");
+        
+        // BUG FIX: Validamos nulos y espacios ocultos con .trim()
+        if (pedido.getEstado() == null || !pedido.getEstado().trim().equalsIgnoreCase("PENDIENTE")) {
+            throw new RuntimeException("Solo se pueden cancelar pedidos en estado PENDIENTE");
         }
+        
         List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(id);
         for (DetallePedido detalle : detalles) {
             var producto = detalle.getProducto();
             producto.setStockActual(producto.getStockActual() + detalle.getCantidad());
             productoRepository.save(producto);
         }
+        
         pedido.setEstado("CANCELADO");
         return pedidoRepository.save(pedido);
     }
@@ -197,4 +202,3 @@ public class PedidoService {
         }).collect(Collectors.toList());
     }
 }
-
