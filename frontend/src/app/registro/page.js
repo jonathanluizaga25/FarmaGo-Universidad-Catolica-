@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./RegistroPage.module.css";
 
@@ -60,6 +61,7 @@ function InputField({ label, id, type, placeholder, icon, value, onChange, error
 }
 
 export default function RegistroPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     nombre: "",
     correo: "",
@@ -111,9 +113,7 @@ export default function RegistroPage() {
         return;
       }
 
-      alert('¡Cuenta creada exitosamente! Ya puedes iniciar sesión.');
-      setForm({ nombre: '', correo: '', contrasena: '', confirmar: '' });
-      setErrors({});
+      router.push('/login?registered=1');
     } catch (e) {
       setErrors({ correo: 'Error al conectar con el servidor' });
     } finally {

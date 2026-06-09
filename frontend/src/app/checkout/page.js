@@ -20,7 +20,7 @@ export default function CheckoutPage() {
     direccion:     '',
     telefono:      '',
     metodoPago:    'EFECTIVO',
-    tipoEntrega:   'DOMICILIO',
+    tipoEntrega:   'DOMICILIO',   // opciones válidas: DOMICILIO | PRESENCIAL
   });
 
   // Redirige si no está logueado
@@ -42,7 +42,7 @@ export default function CheckoutPage() {
 
   // Calcula costo de envío cada vez que cambia la dirección
   useEffect(() => {
-    if (!form.direccion || form.tipoEntrega === 'RETIRO') {
+    if (!form.direccion || form.tipoEntrega === 'PRESENCIAL') {
       setCostoEnvio(0);
       return;
     }
@@ -144,9 +144,9 @@ export default function CheckoutPage() {
                     onChange={e => campo('tipoEntrega', e.target.value)} />
                   🛵 Delivery a domicilio
                 </label>
-                <label className={`opcion ${form.tipoEntrega === 'RETIRO' ? 'opcion-activa' : ''}`}>
-                  <input type="radio" value="RETIRO"
-                    checked={form.tipoEntrega === 'RETIRO'}
+                <label className={`opcion ${form.tipoEntrega === 'PRESENCIAL' ? 'opcion-activa' : ''}`}>
+                  <input type="radio" value="PRESENCIAL"
+                    checked={form.tipoEntrega === 'PRESENCIAL'}
                     onChange={e => campo('tipoEntrega', e.target.value)} />
                   🏪 Retiro en tienda
                 </label>
