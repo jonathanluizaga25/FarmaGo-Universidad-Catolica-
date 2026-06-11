@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Tag(name = "Lotes")
 @RestController
 @RequestMapping("/api/lotes")
-@CrossOrigin(origins = "*")
 public class LoteController {
 
     @Autowired

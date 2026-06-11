@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Tag(name = "Pedidos")
 @RestController
 @RequestMapping("/api/pedidos")
-@CrossOrigin(origins = "*")
 public class PedidoController {
 
     @Autowired

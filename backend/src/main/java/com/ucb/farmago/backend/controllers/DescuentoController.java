@@ -10,7 +10,6 @@ import java.util.List;
 @Tag(name = "Descuentos")
 @RestController
 @RequestMapping("/api/descuentos")
-@CrossOrigin(origins = "*")
 public class DescuentoController {
 
     private final DescuentoService descuentoService;
