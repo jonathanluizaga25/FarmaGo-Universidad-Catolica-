@@ -22,3 +22,8 @@ Frontend: cd frontend && npm install && npm run dev
 
 ## Repositorio
 github.com/jonathanluizaga25/FarmaGo-Universidad-Catolica-
+
+## Verificacion antes de mergear
+```bash
+cd backend && ./mvnw test
+```

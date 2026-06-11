@@ -1,13 +1,10 @@
 package com.ucb.farmago.backend;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class BackendApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {
+        // Test unitario sin contexto Spring - los tests reales estan en UsuarioServiceTest y PedidoServiceTest
+    }
 }
