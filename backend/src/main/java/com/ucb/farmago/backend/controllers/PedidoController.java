@@ -41,8 +41,12 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<PedidoDTO> crear(@RequestBody Pedido pedido) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoDTO(pedidoService.crear(pedido)));
+    public ResponseEntity<?> crear(@RequestBody Pedido pedido) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoDTO(pedidoService.crear(pedido)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/estado")

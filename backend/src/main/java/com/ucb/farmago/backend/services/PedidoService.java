@@ -75,7 +75,12 @@ public class PedidoService {
             detalle.setPrecioUnitario(item.getPrecioUnitario());
             detallePedidoRepository.save(detalle);
 
-            var producto = item.getProducto();
+            var producto = productoRepository.findByIdForUpdate(item.getProducto().getId())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            if (producto.getStockActual() < item.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para " + producto.getNombre() +
+                    " (disponible: " + producto.getStockActual() + ", pedido: " + item.getCantidad() + ")");
+            }
             producto.setStockActual(producto.getStockActual() - item.getCantidad());
             productoRepository.save(producto);
         }
