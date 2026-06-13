@@ -13,10 +13,15 @@ Copiar backend/.env.example a backend/.env y completar con tu contrasena local.
 mysql -u root -p menor database/farmago.sql
 ### 3. Correr el proyecto
 Backend:
-`powershell
+```powershell
 $env:DB_PASSWORD="tu_contrasena"; cd backend; ./mvnw spring-boot:run
 ```
 
 Frontend: cd frontend && npm install && npm run dev
 ## Repositorio
 github.com/jonathanluizaga25/FarmaGo-Universidad-Catolica-
+
+## Verificacion antes de mergear
+```bash
+cd backend && ./mvnw test
+```

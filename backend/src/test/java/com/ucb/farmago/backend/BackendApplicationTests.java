@@ -5,5 +5,6 @@ class BackendApplicationTests {
 
     @Test
     void contextLoads() {
+        // Test unitario sin contexto Spring - los tests reales estan en UsuarioServiceTest y PedidoServiceTest
     }
 }
