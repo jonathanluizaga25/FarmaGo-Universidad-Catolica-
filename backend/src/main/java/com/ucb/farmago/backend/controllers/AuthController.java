@@ -13,7 +13,6 @@ import java.util.Map;
 @Tag(name = "Autenticacion")
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
