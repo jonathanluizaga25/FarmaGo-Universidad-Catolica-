@@ -29,6 +29,5 @@ public class DataSeeder {
         admin.setDireccion("");
         admin.setTelefono("");
         repo.save(admin);
-        System.out.println("✓ Admin creado → email: " + email + " | contraseña: " + password);
     }
 }
