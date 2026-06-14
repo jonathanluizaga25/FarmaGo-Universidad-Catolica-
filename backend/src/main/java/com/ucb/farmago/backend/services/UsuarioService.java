@@ -15,7 +15,11 @@ public class UsuarioService {
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public Usuario registrar(Usuario usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+        String email = usuario.getEmail();
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            throw new RuntimeException("El formato del email no es valido");
+        }
+        if (usuarioRepository.existsByEmail(email)) {
             throw new RuntimeException("El email ya esta registrado");
         }
         usuario.setPasswordHash(passwordEncoder.encode(usuario.getPasswordHash()));

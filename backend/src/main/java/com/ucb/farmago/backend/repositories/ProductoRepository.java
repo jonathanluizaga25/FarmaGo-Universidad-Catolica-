@@ -14,6 +14,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByCategoria(String categoria);
     List<Producto> findByTipo(String tipo);
     List<Producto> findByStockMinimoGreaterThan(Integer stock);
+    List<Producto> findByNombreContainingIgnoreCase(String nombre);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Producto p where p.id = :id")
