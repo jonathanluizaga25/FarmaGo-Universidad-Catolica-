@@ -1,5 +1,7 @@
 package com.ucb.farmago.backend;
+
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.repositories.AlertaRepository;
 import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import com.ucb.farmago.backend.services.UsuarioService;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,9 @@ class UsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private AlertaRepository alertaRepository;
 
     @InjectMocks
     private UsuarioService usuarioService;

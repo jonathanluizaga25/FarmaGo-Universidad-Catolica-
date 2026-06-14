@@ -1,5 +1,6 @@
 package com.ucb.farmago.backend.services;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.AlertaRepository;
@@ -19,6 +20,7 @@ public class UsuarioService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     public Usuario registrar(Usuario usuario) {
         String email = usuario.getEmail();
         if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
