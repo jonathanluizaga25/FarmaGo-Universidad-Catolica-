@@ -4,6 +4,7 @@ import "./page.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Navbar from "../../../components/Navbar/Navbar";
 import { getCart, updateQuantity, removeFromCart } from "../../services/cartService";
 
 export default function CarritoPage() {
@@ -37,10 +38,13 @@ export default function CarritoPage() {
 
   if (cargando) {
     return (
-      <main className="carrito-container">
-        <h1 className="carrito-title">Carrito de Compras</h1>
-        <p style={{ textAlign: 'center', color: '#888', padding: '2rem' }}>Cargando carrito...</p>
-      </main>
+      <>
+        <Navbar />
+        <main className="carrito-container">
+          <h1 className="carrito-title">Carrito de Compras</h1>
+          <p style={{ textAlign: 'center', color: '#888', padding: '2rem' }}>Cargando carrito...</p>
+        </main>
+      </>
     );
   }
 
@@ -48,6 +52,8 @@ export default function CarritoPage() {
   const total = carrito?.total || 0;
 
   return (
+    <>
+    <Navbar />
     <main className="carrito-container">
       <h1 className="carrito-title">Carrito de Compras</h1>
 
@@ -109,5 +115,6 @@ export default function CarritoPage() {
         </>
       )}
     </main>
+    </>
   );
 }

@@ -203,7 +203,7 @@ export default function AdminProductosPage() {
   const [autorizado] = useState(() => {
     if (typeof window === "undefined") return false;
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    return usuario?.rol === "ADMIN";
+    return usuario?.rol === "ADMINISTRADOR";
   });
 
   useEffect(() => {
@@ -274,6 +274,7 @@ export default function AdminProductosPage() {
     <div className="admin-wrapper">
 
       {/* ── Encabezado ── */}
+      
       <div className="admin-header">
         <div>
           <h1 className="admin-titulo">Panel de Administrador</h1>

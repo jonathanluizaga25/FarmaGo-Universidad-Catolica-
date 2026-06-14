@@ -20,4 +20,12 @@ export const otcProducts = [
     stock: 30,
     imagen: "/products/vitaminac.jpg",
   },
+
+  {
+    id: 4,
+    nombre: "Actron" ,
+    precio: 4,
+    stock: 50 ,
+    imagen : "" ,
+  },
 ];
