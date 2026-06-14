@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 @Tag(name = "Alertas")
 @RestController
 @RequestMapping("/api/alertas")
-@CrossOrigin(origins = "*")
 public class AlertaController {
 
     private final AlertaService alertaService;

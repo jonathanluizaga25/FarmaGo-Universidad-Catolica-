@@ -9,7 +9,6 @@ import java.util.Map;
 @Tag(name = "Supervision")
 @RestController
 @RequestMapping("/api/supervision")
-@CrossOrigin(origins = "*")
 public class SupervisionController {
 
     private final SupervisionService supervisionService;

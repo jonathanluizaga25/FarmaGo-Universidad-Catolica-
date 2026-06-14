@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Carrito")
 @RestController
 @RequestMapping("/api/carrito")
-@CrossOrigin(origins = "*")
 public class CarritoController {
 
     @Autowired

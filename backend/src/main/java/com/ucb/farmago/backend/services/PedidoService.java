@@ -76,7 +76,12 @@ public class PedidoService {
             detalle.setPrecioUnitario(item.getPrecioUnitario());
             detallePedidoRepository.save(detalle);
 
-            var producto = item.getProducto();
+            var producto = productoRepository.findByIdForUpdate(item.getProducto().getId())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            if (producto.getStockActual() < item.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para " + producto.getNombre() +
+                    " (disponible: " + producto.getStockActual() + ", pedido: " + item.getCantidad() + ")");
+            }
             producto.setStockActual(producto.getStockActual() - item.getCantidad());
             productoRepository.save(producto);
         }
@@ -125,8 +130,7 @@ public class PedidoService {
     @Transactional
     public Pedido cancelar(Long id) {
         Pedido pedido = obtenerPorId(id);
-        
-        // BUG FIX: Validamos nulos y espacios ocultos con .trim()
+// BUG FIX: Validamos nulos y espacios ocultos con .trim()
         if (pedido.getEstado() == null || !pedido.getEstado().trim().equalsIgnoreCase("PENDIENTE")) {
             throw new RuntimeException("Solo se pueden cancelar pedidos en estado PENDIENTE");
         }

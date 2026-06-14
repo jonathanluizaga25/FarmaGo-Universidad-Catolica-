@@ -11,7 +11,6 @@ import java.util.List;
 @Tag(name = "Caja")
 @RestController
 @RequestMapping("/api/caja")
-@CrossOrigin(origins = "*")
 public class CajaController {
 
     private final CajaService cajaService;
