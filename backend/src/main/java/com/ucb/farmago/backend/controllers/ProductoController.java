@@ -73,4 +73,12 @@ public class ProductoController {
                 .map(ProductoDTO::new)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ProductoDTO>> buscar(@RequestParam String nombre) {
+        List<ProductoDTO> resultados = productoService.buscarPorNombre(nombre).stream()
+                .map(ProductoDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(resultados);
+    }
 }
