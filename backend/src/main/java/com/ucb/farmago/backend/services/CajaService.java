@@ -11,6 +11,8 @@ import java.util.List;
 @Service
 public class CajaService {
 
+    private static final List<String> TURNOS_VALIDOS = List.of("MANANA", "TARDE", "NOCHE", "DIA_COMPLETO");
+
     private final CajaRepository cajaRepository;
     private final UsuarioRepository usuarioRepository;
 
@@ -20,9 +22,11 @@ public class CajaService {
     }
 
     public Caja abrirCaja(Long cajeroId, String turno) {
-        List<Caja> abiertas = cajaRepository.findByCerrado(false);
-        boolean tieneAbierta = abiertas.stream().anyMatch(c -> c.getCajero().getId().equals(cajeroId));
-        if (tieneAbierta) {
+        String turnoNormalizado = turno.trim().toUpperCase();
+        if (!TURNOS_VALIDOS.contains(turnoNormalizado)) {
+            throw new RuntimeException("Turno invalido. Valores permitidos: MANANA, TARDE, NOCHE, DIA_COMPLETO");
+        }
+        if (cajaRepository.existsByCajeroIdAndCerradoFalse(cajeroId)) {
             throw new RuntimeException("El cajero ya tiene una caja abierta. Debe cerrarla antes de abrir una nueva.");
         }
         Usuario cajero = usuarioRepository.findById(cajeroId)
@@ -30,7 +34,7 @@ public class CajaService {
         Caja caja = new Caja();
         caja.setCajero(cajero);
         caja.setFecha(LocalDate.now());
-        caja.setTurno(turno);
+        caja.setTurno(turnoNormalizado);
         caja.setTotalEfectivo(BigDecimal.ZERO);
         caja.setTotalQr(BigDecimal.ZERO);
         caja.setCerrado(false);
