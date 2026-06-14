@@ -22,8 +22,12 @@ public class Producto {
 
     private String imagenUrl;
 
-    // BUG FIX: Mapeamos la variable 'tipo' directamente a la columna 'categoria' de la BD
-    @Column(name = "categoria", nullable = false)
+    // Se mantiene la categoría comercial (Ej: Analgésico, Jarabe)
+    @Column(name = "categoria")
+    private String categoria;
+
+    // Se mapea explícitamente el tipo de negocio (Ej: OTC / ETICO)
+    @Column(name = "tipo", nullable = false)
     private String tipo = "OTC";
 
     @Column(name = "stock_minimo")
@@ -50,6 +54,9 @@ public class Producto {
 
     public String getImagenUrl() { return imagenUrl; }
     public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
+
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
