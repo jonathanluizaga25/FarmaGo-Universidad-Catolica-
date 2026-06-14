@@ -26,6 +26,7 @@ public class AlertaService {
         this.loteRepository = loteRepository;
     }
 
+    @Scheduled(cron = "0 0 9 * * *")
     public void verificarDesabastecimiento() {
         List<Producto> productos = productoRepository.findAll();
         for (Producto producto : productos) {

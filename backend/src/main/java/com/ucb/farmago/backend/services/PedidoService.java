@@ -129,8 +129,8 @@ public class PedidoService {
     @Transactional
     public Pedido cancelar(Long id) {
         Pedido pedido = obtenerPorId(id);
-        if (!"Pendiente".equalsIgnoreCase(pedido.getEstado())) {
-            throw new RuntimeException("Solo se pueden cancelar pedidos en estado Pendiente");
+        if (!"PENDIENTE".equals(pedido.getEstado())) {
+            throw new RuntimeException("Solo se pueden cancelar pedidos en estado PENDIENTE");
         }
         List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(id);
         for (DetallePedido detalle : detalles) {
