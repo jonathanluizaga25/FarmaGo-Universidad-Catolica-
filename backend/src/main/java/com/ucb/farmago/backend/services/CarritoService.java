@@ -39,6 +39,9 @@ public class CarritoService {
 
     @Transactional
     public Carrito agregar(Long clienteId, Long productoId, Integer cantidad) {
+        if (cantidad == null || cantidad <= 0) {
+            throw new RuntimeException("La cantidad debe ser mayor a cero");
+        }
         Carrito carrito = obtenerOCrearCarrito(clienteId);
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -51,9 +54,6 @@ public class CarritoService {
             );
         }
 
-        if (cantidad <= 0) {
-            throw new RuntimeException("La cantidad debe ser mayor a cero");
-        }
         if (producto.getStockActual() < cantidad) {
             throw new RuntimeException("Stock insuficiente");
         }

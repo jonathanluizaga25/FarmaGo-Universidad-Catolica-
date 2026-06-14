@@ -76,6 +76,9 @@ public class ProductoController {
 
     @GetMapping("/buscar")
     public ResponseEntity<List<ProductoDTO>> buscar(@RequestParam String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
         List<ProductoDTO> resultados = productoService.buscarPorNombre(nombre).stream()
                 .map(ProductoDTO::new)
                 .collect(Collectors.toList());
