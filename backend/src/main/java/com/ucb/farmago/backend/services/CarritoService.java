@@ -51,6 +51,9 @@ public class CarritoService {
             );
         }
 
+        if (cantidad <= 0) {
+            throw new RuntimeException("La cantidad debe ser mayor a cero");
+        }
         if (producto.getStockActual() < cantidad) {
             throw new RuntimeException("Stock insuficiente");
         }
