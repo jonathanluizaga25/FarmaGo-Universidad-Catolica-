@@ -21,9 +21,13 @@ public class Producto {
     private BigDecimal precio;
 
     private String imagenUrl;
+
+    // Se mantiene la categoría comercial (Ej: Analgésico, Jarabe)
+    @Column(name = "categoria")
     private String categoria;
 
-    @Column(nullable = false)
+    // Se mapea explícitamente el tipo de negocio (Ej: OTC / ETICO)
+    @Column(name = "tipo", nullable = false)
     private String tipo = "OTC";
 
     @Column(name = "stock_minimo")
