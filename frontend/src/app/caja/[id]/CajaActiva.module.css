@@ -1,0 +1,84 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito', sans-serif;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  background: linear-gradient(135deg, #eef2f8 0%, #dce6f5 100%);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 44px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 8px 40px rgba(26, 47, 94, 0.12);
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a2f5e;
+  margin-bottom: 20px;
+}
+
+.info { text-align: center; font-size: 0.88rem; color: #7a8aaa; }
+
+.errorMsg {
+  background: #fff0f0;
+  border: 1px solid #f5c0c0;
+  color: #c0392b;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+
+.idBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #eef6ff;
+  border: 1px solid #b8d4f5;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.idLabel {
+  font-size: 0.78rem;
+  color: #7a8aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.idValue {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a2f5e;
+}
+
+.detalles { list-style: none; }
+
+.detalles li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f8;
+  font-size: 0.9rem;
+  color: #2d2d2d;
+}
+.detalles li:last-child { border-bottom: none; }
+.detalles li span { color: #7a8aaa; }
+
+.abierta { color: #2e7d32; }
+.cerrada { color: #c0392b; }
