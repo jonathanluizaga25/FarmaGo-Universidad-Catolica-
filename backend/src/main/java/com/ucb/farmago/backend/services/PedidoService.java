@@ -6,11 +6,13 @@ import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Carrito;
 import com.ucb.farmago.backend.models.DetallePedido;
+import com.ucb.farmago.backend.models.Entrega;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.AlertaRepository;
 import com.ucb.farmago.backend.repositories.CarritoRepository;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
+import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
 import com.ucb.farmago.backend.repositories.UsuarioRepository;
@@ -43,6 +45,9 @@ public class PedidoService {
     @Autowired
     private AlertaRepository alertaRepository;
 
+    @Autowired
+    private EntregaRepository entregaRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -62,7 +67,6 @@ public class PedidoService {
         pedido.setCliente(cliente);
         pedido.setEstado("PENDIENTE");
 
-        // Leer el carrito activo del cliente
         Carrito carrito = carritoRepository.findByClienteIdAndEstado(cliente.getId(), "ACTIVO")
                 .orElseThrow(() -> new RuntimeException("El carrito está vacío"));
 
@@ -72,7 +76,6 @@ public class PedidoService {
 
         Pedido guardado = pedidoRepository.save(pedido);
 
-        // Crear un DetallePedido por cada item del carrito y descontar stock
         for (var item : carrito.getItems()) {
             DetallePedido detalle = new DetallePedido();
             detalle.setPedido(guardado);
@@ -91,7 +94,14 @@ public class PedidoService {
             productoRepository.save(producto);
         }
 
-        // Vaciar el carrito
+        // BUG FIX PRO: Creamos la entrega si es a domicilio, validando nulos y sin usar "=="
+        if (pedido.getTipoEntrega() != null && "DOMICILIO".equalsIgnoreCase(pedido.getTipoEntrega().trim())) {
+            Entrega entrega = new Entrega();
+            entrega.setPedido(guardado);
+            entrega.setEstado("PENDIENTE_ASIGNACION");
+            entregaRepository.save(entrega);
+        }
+
         carrito.getItems().clear();
         carritoRepository.save(carrito);
 
@@ -126,7 +136,6 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado);
     }
 
-    // HU-10: Calcula el costo de envio segun la direccion del cliente
     public BigDecimal calcularCostoEnvio(String direccion) {
         if (direccion == null || direccion.isEmpty()) {
             return new BigDecimal("15");
@@ -169,9 +178,7 @@ public class PedidoService {
             pedido.setEstado("RECHAZADO_DEVOLUCION");
             pedidoRepository.save(pedido);
             return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                    "Discrepancia: La cantidad de ítems en la factura (" +
-                            (facturaDTO.getItems() != null ? facturaDTO.getItems().size() : 0) +
-                            ") no coincide con el pedido original (" + detallesOriginales.size() + ").");
+                    "Discrepancia: La cantidad de ítems en la factura no coincide.");
         }
 
         for (DetallePedido detalleOriginal : detallesOriginales) {
@@ -193,16 +200,14 @@ public class PedidoService {
                 pedido.setEstado("RECHAZADO_DEVOLUCION");
                 pedidoRepository.save(pedido);
                 return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                        "Discrepancia en Producto ID " + prodId + ": Cantidad facturada (" +
-                                itemFactura.getCantidad() + ") difiere de la pedida (" + detalleOriginal.getCantidad() + ").");
+                        "Discrepancia en Producto ID " + prodId + " por cantidad.");
             }
 
             if (itemFactura.getPrecioUnitario().compareTo(detalleOriginal.getPrecioUnitario()) != 0) {
                 pedido.setEstado("RECHAZADO_DEVOLUCION");
                 pedidoRepository.save(pedido);
                 return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                        "Discrepancia en Producto ID " + prodId + ": Precio facturado (" +
-                                itemFactura.getPrecioUnitario() + ") difiere del acordado (" + detalleOriginal.getPrecioUnitario() + ").");
+                        "Discrepancia en Producto ID " + prodId + " por precio.");
             }
         }
 
