@@ -1,0 +1,133 @@
+
+.seguimiento-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.seguimiento-titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+.estado-cargando, .estado-error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.125rem;
+}
+
+.estado-error {
+  color: #ef4444;
+}
+
+.sin-pedidos {
+  text-align: center;
+  padding: 40px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.sin-pedidos-texto {
+  color: #4b5563;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.pedidos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pedido-tarjeta {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pedido-info-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pedido-encabezado {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pedido-numero {
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.125rem;
+}
+
+/* Badges de Estados */
+.badge-estado {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-pendiente { background-color: #f3f4f6; color: #374151; }
+.badge-confirmado { background-color: #dbeafe; color: #1e40af; }
+.badge-en-camino { background-color: #ffedd5; color: #9a3412; }
+.badge-entregado { background-color: #dcfce7; color: #14532d; }
+.badge-cancelado { background-color: #fee2e2; color: #991b1b; }
+
+.pedido-fecha {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.pedido-entrega {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.pedido-entrega span {
+  font-weight: 500;
+}
+
+.pedido-monto {
+  text-align: right;
+}
+
+.total-etiqueta {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: block;
+}
+
+.total-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .pedido-tarjeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .pedido-monto {
+    text-align: left;
+    width: 100%;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 12px;
+  }
+}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./RegistroPage.module.css";
 
+
 function MedicalCrossIcon() {
   return (
     <Link href="/" className={styles.logo}>

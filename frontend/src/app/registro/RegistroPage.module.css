@@ -25,9 +25,25 @@
   padding: 36px 40px;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(27, 61, 110, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  background: #1b3d6e;
+}
+
+.card:hover .label {
+  color: #ffffff;
+}
+
+.card:hover .submitBtn {
+  background-color: #ffffff;
+  color: #1b3d6e;
 }
 
 .logoContainer {
+  color: #374151;
+  transition: color 0.3s ease;
   text-align: center;
   margin-bottom: 24px;
 }
@@ -81,6 +97,7 @@
   margin-top: 4px;
 }
 
+
 .submitBtn {
   width: 100%;
   padding: 14px;
@@ -92,10 +109,7 @@
   font-weight: 700;
   cursor: pointer;
   margin-top: 12px;
-}
-
-.submitBtn:hover {
-  opacity: 0.9;
+  transition: all 0.3s ease;
 }
 
 .loginText {
@@ -120,4 +134,29 @@
   width: 80px;
   height: 80px;
   object-fit: contain;
+}
+.card:hover .title {
+  color: #ffffff;
+}
+
+.card:hover .input {
+  background-color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #1b3d6e;
+}
+
+.card:hover .inputIcon {
+  color: #ffffff;
+}
+
+.card:hover .loginText {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card:hover .link {
+  color: #f5a623;
+}
+
+.card:hover .checkboxLabel {
+  color: rgba(255, 255, 255, 0.7);
 }

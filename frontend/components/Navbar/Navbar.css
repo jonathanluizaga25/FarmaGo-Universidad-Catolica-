@@ -126,7 +126,7 @@
   color: var(--navy);
   transition: background 0.2s;
   position: relative;
-  text-decoration: none; /* por si se usa como <Link> */
+  text-decoration: none; 
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -197,7 +197,7 @@
   padding: 0;
   display: flex;
   gap: 4px;
-  flex: 1; /* empuja los botones auth al extremo derecho */
+  flex: 1; 
 }
 
 /* ── Botones Registrarse / Iniciar sesión ── */
@@ -329,6 +329,6 @@
   }
 
   .navbar-main__auth {
-    display: none; /* se ocultan en móvil; podés moverlos al menú hamburguesa */
+    display: none; 
   }
 }

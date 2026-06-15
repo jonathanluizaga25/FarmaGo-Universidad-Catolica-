@@ -92,6 +92,11 @@ export default function Navbar() {
               Iniciar sesión
             </Link>
 
+            {/* ENLACE REQUERIDO POR LA HISTORIA DE USUARIO */}
+            <Link href="/seguimiento" className="auth-btn auth-btn--outline">
+              Mis Pedidos
+            </Link>
+
           </div>
         </div>
       </nav>
