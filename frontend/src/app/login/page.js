@@ -1,16 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import styles from './login.module.css';
 
-export default function LoginPage() {
+function LoginContenido() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd]   = useState(false);
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const registrado = searchParams.get('registered') === '1';
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -34,7 +37,7 @@ export default function LoginPage() {
 
       const usuario = await res.json();
       localStorage.setItem('usuario', JSON.stringify(usuario));
-      router.push('/catalogo');
+      router.push(usuario.rol === 'ADMINISTRADOR' ? '/admin' : '/catalogo');
     } catch (e) {
       setError('Error al conectar con el servidor');
     } finally {
@@ -55,6 +58,11 @@ export default function LoginPage() {
             Accede a tu cuenta de <strong>Farma<span className={styles.gold}>GO</span></strong>
           </p>
 
+          {registrado && (
+            <div className={styles.errorMsg} style={{ background: '#e8f5e9', color: '#2e7d32', borderColor: '#a5d6a7' }}>
+              ¡Cuenta creada! Ya podés iniciar sesión.
+            </div>
+          )}
           {error && <div className={styles.errorMsg}>{error}</div>}
 
           <div className={styles.field}>
@@ -139,5 +147,13 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContenido />
+    </Suspense>
   );
 }

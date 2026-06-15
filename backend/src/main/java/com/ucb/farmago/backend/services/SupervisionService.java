@@ -1,5 +1,6 @@
 package com.ucb.farmago.backend.services;
 
+import com.ucb.farmago.backend.dto.PedidoDTO;
 import com.ucb.farmago.backend.models.Alerta;
 import com.ucb.farmago.backend.models.Descuento;
 import com.ucb.farmago.backend.models.Pedido;
@@ -30,19 +31,25 @@ public class SupervisionService {
 
     public Map<String, Object> obtenerPanelSupervision() {
         List<Pedido> pedidosPendientes = pedidoRepository.findByEstado("PENDIENTE");
+        List<PedidoDTO> pedidosPendientesDTO = pedidosPendientes.stream()
+                .map(PedidoDTO::new)
+                .collect(Collectors.toList());
+
         List<Alerta> alertasNoLeidas = alertaRepository.findByLeida(Boolean.FALSE);
+
         LocalDate hoy = LocalDate.now();
         List<Descuento> descuentosVigentes = descuentoRepository.findByActivo(true).stream()
                 .filter(d -> !hoy.isBefore(d.getFechaInicio()) && !hoy.isAfter(d.getFechaFin()))
                 .collect(Collectors.toList());
 
         Map<String, Object> panel = new HashMap<>();
-        panel.put("pedidosPendientes", pedidosPendientes);
+        panel.put("pedidosPendientes", pedidosPendientesDTO);
         panel.put("alertasNoLeidas", alertasNoLeidas);
         panel.put("descuentosVigentes", descuentosVigentes);
-        panel.put("totalPedidosPendientes", pedidosPendientes.size());
+        panel.put("totalPedidosPendientes", pedidosPendientesDTO.size());
         panel.put("totalAlertasNoLeidas", alertasNoLeidas.size());
         panel.put("totalDescuentosVigentes", descuentosVigentes.size());
+
         return panel;
     }
 }

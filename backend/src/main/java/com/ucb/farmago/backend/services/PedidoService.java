@@ -3,16 +3,23 @@ package com.ucb.farmago.backend.services;
 import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
 import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
+import com.ucb.farmago.backend.models.Alerta;
+import com.ucb.farmago.backend.models.Carrito;
 import com.ucb.farmago.backend.models.DetallePedido;
+import com.ucb.farmago.backend.models.Entrega;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.repositories.AlertaRepository;
+import com.ucb.farmago.backend.repositories.CarritoRepository;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
+import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.ProductoRepository;
 import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +39,15 @@ public class PedidoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private CarritoRepository carritoRepository;
+
+    @Autowired
+    private AlertaRepository alertaRepository;
+
+    @Autowired
+    private EntregaRepository entregaRepository;
+
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
@@ -41,14 +57,63 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
 
+    @Transactional
     public Pedido crear(Pedido pedido) {
-        if (pedido.getCliente() != null && pedido.getCliente().getId() != null) {
-            Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
-                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-            pedido.setCliente(cliente);
+        if (pedido.getCliente() == null || pedido.getCliente().getId() == null) {
+            throw new RuntimeException("Se requiere un cliente para crear el pedido");
         }
+        Usuario cliente = usuarioRepository.findById(pedido.getCliente().getId())
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        pedido.setCliente(cliente);
         pedido.setEstado("PENDIENTE");
+
+        Carrito carrito = carritoRepository.findByClienteIdAndEstado(cliente.getId(), "ACTIVO")
+                .orElseThrow(() -> new RuntimeException("El carrito está vacío"));
+
+        if (carrito.getItems() == null || carrito.getItems().isEmpty()) {
+            throw new RuntimeException("El carrito está vacío");
+        }
+
         Pedido guardado = pedidoRepository.save(pedido);
+
+        for (var item : carrito.getItems()) {
+            DetallePedido detalle = new DetallePedido();
+            detalle.setPedido(guardado);
+            detalle.setProducto(item.getProducto());
+            detalle.setCantidad(item.getCantidad());
+            detalle.setPrecioUnitario(item.getPrecioUnitario());
+            detallePedidoRepository.save(detalle);
+
+            var producto = productoRepository.findByIdForUpdate(item.getProducto().getId())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            if (producto.getStockActual() < item.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para " + producto.getNombre() +
+                    " (disponible: " + producto.getStockActual() + ", pedido: " + item.getCantidad() + ")");
+            }
+            producto.setStockActual(producto.getStockActual() - item.getCantidad());
+            productoRepository.save(producto);
+        }
+
+        // BUG FIX PRO: Creamos la entrega si es a domicilio, validando nulos y sin usar "=="
+        if (pedido.getTipoEntrega() != null && "DOMICILIO".equalsIgnoreCase(pedido.getTipoEntrega().trim())) {
+            Entrega entrega = new Entrega();
+            entrega.setPedido(guardado);
+            entrega.setEstado("PENDIENTE_ASIGNACION");
+            entregaRepository.save(entrega);
+        }
+
+        carrito.getItems().clear();
+        carritoRepository.save(carrito);
+
+        // Alerta al administrador cuando se crea un nuevo pedido
+        Alerta alerta = new Alerta();
+        alerta.setTipo("NUEVO_PEDIDO");
+        alerta.setMensaje("Nuevo pedido creado - ID: " + guardado.getId() +
+                " | Cliente: " + (guardado.getCliente() != null ? guardado.getCliente().getNombre() : "Desconocido") +
+                " | Total: " + guardado.getTotal() + " Bs");
+        alerta.setLeida(Boolean.FALSE);
+        alertaRepository.save(alerta);
+
         return pedidoRepository.findById(guardado.getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
@@ -71,7 +136,6 @@ public class PedidoService {
         return pedidoRepository.findByEstado(estado);
     }
 
-    // HU-10: Calcula el costo de envio segun la direccion del cliente
     public BigDecimal calcularCostoEnvio(String direccion) {
         if (direccion == null || direccion.isEmpty()) {
             return new BigDecimal("15");
@@ -89,15 +153,18 @@ public class PedidoService {
     @Transactional
     public Pedido cancelar(Long id) {
         Pedido pedido = obtenerPorId(id);
-        if (!"Pendiente".equalsIgnoreCase(pedido.getEstado())) {
-            throw new RuntimeException("Solo se pueden cancelar pedidos en estado Pendiente");
+// BUG FIX: Validamos nulos y espacios ocultos con .trim()
+        if (pedido.getEstado() == null || !pedido.getEstado().trim().equalsIgnoreCase("PENDIENTE")) {
+            throw new RuntimeException("Solo se pueden cancelar pedidos en estado PENDIENTE");
         }
+        
         List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(id);
         for (DetallePedido detalle : detalles) {
             var producto = detalle.getProducto();
             producto.setStockActual(producto.getStockActual() + detalle.getCantidad());
             productoRepository.save(producto);
         }
+        
         pedido.setEstado("CANCELADO");
         return pedidoRepository.save(pedido);
     }
@@ -111,9 +178,7 @@ public class PedidoService {
             pedido.setEstado("RECHAZADO_DEVOLUCION");
             pedidoRepository.save(pedido);
             return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                    "Discrepancia: La cantidad de ítems en la factura (" +
-                            (facturaDTO.getItems() != null ? facturaDTO.getItems().size() : 0) +
-                            ") no coincide con el pedido original (" + detallesOriginales.size() + ").");
+                    "Discrepancia: La cantidad de ítems en la factura no coincide.");
         }
 
         for (DetallePedido detalleOriginal : detallesOriginales) {
@@ -135,16 +200,14 @@ public class PedidoService {
                 pedido.setEstado("RECHAZADO_DEVOLUCION");
                 pedidoRepository.save(pedido);
                 return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                        "Discrepancia en Producto ID " + prodId + ": Cantidad facturada (" +
-                                itemFactura.getCantidad() + ") difiere de la pedida (" + detalleOriginal.getCantidad() + ").");
+                        "Discrepancia en Producto ID " + prodId + " por cantidad.");
             }
 
             if (itemFactura.getPrecioUnitario().compareTo(detalleOriginal.getPrecioUnitario()) != 0) {
                 pedido.setEstado("RECHAZADO_DEVOLUCION");
                 pedidoRepository.save(pedido);
                 return new ResultadoValidacionDTO("RECHAZADO_DEVOLUCION",
-                        "Discrepancia en Producto ID " + prodId + ": Precio facturado (" +
-                                itemFactura.getPrecioUnitario() + ") difiere del acordado (" + detalleOriginal.getPrecioUnitario() + ").");
+                        "Discrepancia en Producto ID " + prodId + " por precio.");
             }
         }
 
@@ -162,4 +225,3 @@ public class PedidoService {
         }).collect(Collectors.toList());
     }
 }
-

@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Tag(name = "Productos")
 @RestController
 @RequestMapping("/api/productos")
-@CrossOrigin(origins = "*")
 public class ProductoController {
 
     @Autowired
@@ -73,5 +72,16 @@ public class ProductoController {
         return productoService.listarPorCategoria(categoria).stream()
                 .map(ProductoDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ProductoDTO>> buscar(@RequestParam String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<ProductoDTO> resultados = productoService.buscarPorNombre(nombre).stream()
+                .map(ProductoDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(resultados);
     }
 }

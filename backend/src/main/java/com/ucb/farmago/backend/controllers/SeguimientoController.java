@@ -12,7 +12,6 @@ import java.util.List;
 @Tag(name = "Seguimiento")
 @RestController
 @RequestMapping("/api/seguimiento")
-@CrossOrigin(origins = "*")
 public class SeguimientoController {
 
     @Autowired
