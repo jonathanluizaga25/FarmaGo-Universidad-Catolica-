@@ -25,7 +25,7 @@ public class DataSeeder {
         admin.setNombre(nombre);
         admin.setEmail(email);
         admin.setPasswordHash(new BCryptPasswordEncoder().encode(password));
-        admin.setRol("ADMIN");
+        admin.setRol("ADMINISTRADOR");
         admin.setDireccion("");
         admin.setTelefono("");
         repo.save(admin);
