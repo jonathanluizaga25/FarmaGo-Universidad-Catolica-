@@ -2,12 +2,15 @@ package com.ucb.farmago.backend.controllers;
 
 import com.ucb.farmago.backend.dto.UsuarioDTO;
 import com.ucb.farmago.backend.models.Usuario;
+import com.ucb.farmago.backend.security.JwtUtil;
 import com.ucb.farmago.backend.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @Tag(name = "Autenticacion")
@@ -17,6 +20,9 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@RequestBody Usuario usuario) {
@@ -32,7 +38,13 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         try {
             Usuario usuario = usuarioService.login(body.get("email"), body.get("password"));
-            return ResponseEntity.ok(new UsuarioDTO(usuario));
+            String token = jwtUtil.generarToken(usuario.getEmail(), usuario.getRol());
+
+            Map<String, Object> respuesta = new HashMap<>();
+            respuesta.put("token", token);
+            respuesta.put("usuario", new UsuarioDTO(usuario));
+
+            return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
