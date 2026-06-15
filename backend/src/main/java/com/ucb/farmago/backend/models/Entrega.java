@@ -15,8 +15,9 @@ public class Entrega {
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
 
+    
     @ManyToOne
-    @JoinColumn(name = "repartidor_id", nullable = false)
+    @JoinColumn(name = "repartidor_id")
     private Usuario repartidor;
 
     @Column(nullable = false)
@@ -52,4 +53,3 @@ public class Entrega {
     public Boolean getEntregaExitosa() { return entregaExitosa; }
     public void setEntregaExitosa(Boolean entregaExitosa) { this.entregaExitosa = entregaExitosa; }
 }
-
