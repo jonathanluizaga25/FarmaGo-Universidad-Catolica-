@@ -1,4 +1,22 @@
 "use client";
+
+// ─── admin/page.js — Panel de administración de FarmaGO ──────────────────────
+// Solo accesible si el usuario tiene rol === 'ADMINISTRADOR'.
+// Si no tiene ese rol (o no está logueado), lo redirige a /login.
+//
+// Al cargar, hace 4 llamadas en paralelo con fetchWithAuth (que agrega el JWT):
+//   GET /api/productos   → lista de todos los productos
+//   GET /api/pedidos     → todos los pedidos
+//   GET /api/alertas     → alertas de stock y vencimiento
+//   GET /api/auth/usuarios → todos los usuarios registrados
+//
+// Secciones del panel (sidebar):
+//   Productos  → tabla con filtros, crear/editar/eliminar productos
+//   Pedidos    → cambiar estado (PENDIENTE → ENTREGADO | CANCELADO)
+//   Alertas    → ver y marcar como leídas
+//   Usuarios   → solo lectura (ver quién está registrado)
+//   Lotes, Proveedores, Caja, Supervisión, Descuentos → en construcción
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
@@ -144,12 +162,17 @@ export default function AdminPage() {
   // Carga
   const [cargando, setCargando] = useState(true);
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // ── Auth: guarda de ruta ─────────────────────────────────────────────────
+  // Si el usuario no es ADMINISTRADOR (o no hay sesión), redirige a login.
+  // Se usa useState con lazy initializer (lee localStorage una sola vez al montar)
+  // para evitar el error ESLint react-hooks/set-state-in-effect.
   useEffect(() => {
     if (!usuario || usuario.rol !== "ADMINISTRADOR") { router.replace("/login"); }
   }, [usuario, router]);
 
-  // ── Fetch datos ──────────────────────────────────────────────────────────
+  // ── Carga de datos: 4 llamadas en paralelo ────────────────────────────────
+  // cancelled evita setear estado si el componente se desmonta antes de que
+  // terminen las llamadas (evita memory leaks y warnings de React).
   useEffect(() => {
     if (!usuario || usuario.rol !== "ADMINISTRADOR") return;
     let cancelled = false;
@@ -169,10 +192,10 @@ export default function AdminPage() {
       }
     }
     cargarTodo();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; }; // cleanup: cancela si se desmonta
   }, [usuario]);
 
-  // ── KPIs ─────────────────────────────────────────────────────────────────
+  // ── KPIs: métricas del panel (calculadas en el cliente, sin llamadas extra) ──
   const pedidosPendientes = pedidos.filter((p) => p.estado === "PENDIENTE").length;
   const alertasNoLeidas   = alertas.filter((a) => !a.leida).length;
   const totalProductos    = productos.length;

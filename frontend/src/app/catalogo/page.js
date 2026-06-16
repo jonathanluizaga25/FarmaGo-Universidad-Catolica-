@@ -1,6 +1,18 @@
 'use client';
 
+// ─── catalogo/page.js — Catálogo de productos OTC ────────────────────────────
+// Muestra los productos sin receta (OTC = Over The Counter) disponibles.
+// Es la página principal para clientes.
+//
+// Carga en paralelo:
+//   GET /api/productos/otc       → solo productos OTC con stock disponible
+//   GET /api/descuentos/vigentes → descuentos activos para mostrar el precio con descuento
+//
+// Ambas son rutas públicas (no requieren JWT).
+// ProductCard recibe el producto y la lista de descuentos para calcular el precio final.
+
 import { useEffect, useState } from 'react';
+import { API_URL } from '@/config';
 import "./page.css";
 import Navbar from "../../../components/Navbar/Navbar";
 import ProductCard from "../../../components/ProductCard/ProductCard";
@@ -11,11 +23,10 @@ export default function CatalogoPage() {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    const API = API_URL;
-
+    // Carga productos OTC y descuentos en paralelo para mostrar precios con descuento
     Promise.all([
-      fetch(`${API}/productos/otc`).then((r) => r.json()),
-      fetch(`${API}/descuentos/vigentes`).then((r) => r.json()).catch(() => []),
+      fetch(`${API_URL}/productos/otc`).then((r) => r.json()),
+      fetch(`${API_URL}/descuentos/vigentes`).then((r) => r.json()).catch(() => []), // si falla, usa []
     ]).then(([prods, descs]) => {
       setProductos(prods);
       setDescuentos(descs);

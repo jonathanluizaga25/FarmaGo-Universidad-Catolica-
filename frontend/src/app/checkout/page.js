@@ -1,5 +1,16 @@
 'use client';
 
+// ─── checkout/page.js — Confirmación de pedido ───────────────────────────────
+// Flujo del checkout:
+//   1. Al montar: verifica que hay sesión (localStorage 'usuario'), si no → /login
+//   2. Carga el carrito del usuario (getCart de cartService)
+//   3. Si el carrito está vacío → redirige a /carrito
+//   4. El usuario completa el formulario: nombre factura, NIT, dirección, teléfono,
+//      tipo de entrega (DOMICILIO | PRESENCIAL) y método de pago (EFECTIVO | QR)
+//   5. Si es DOMICILIO, calcula el costo de envío consultando el backend
+//      (se dispara con debounce de 600ms cuando cambia la dirección)
+//   6. Al confirmar: POST /api/pedidos con los datos → redirige a /checkout/exito
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCart, clearCart } from '../../services/cartService';
@@ -23,7 +34,8 @@ export default function CheckoutPage() {
     tipoEntrega:   'DOMICILIO',   // opciones válidas: DOMICILIO | PRESENCIAL
   });
 
-  // Redirige si no está logueado y carga el carrito
+  // Guarda de sesión + carga del carrito
+  // cancelled evita actualizar estado si el componente ya se desmontó
   useEffect(() => {
     const u = localStorage.getItem('usuario');
     if (!u) { router.push('/login'); return; }
@@ -32,7 +44,7 @@ export default function CheckoutPage() {
       const data = await getCart();
       if (cancelled) return;
       if (!data || !data.items || data.items.length === 0) {
-        router.push('/carrito');
+        router.push('/carrito'); // carrito vacío → vuelve al carrito
         return;
       }
       setCarrito(data);
@@ -42,7 +54,8 @@ export default function CheckoutPage() {
     return () => { cancelled = true; };
   }, [router]);
 
-  // Calcula costo de envío cada vez que cambia la dirección (solo en callback async)
+  // Cálculo de costo de envío con debounce (600ms) para no llamar al backend
+  // en cada tecla que escribe el usuario en el campo de dirección
   useEffect(() => {
     if (!form.direccion || form.tipoEntrega === 'PRESENCIAL') return;
     const timer = setTimeout(async () => {
@@ -54,7 +67,7 @@ export default function CheckoutPage() {
         setCostoEnvio(Number(costo));
       }
     }, 600);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer); // cancela el timer si el usuario sigue escribiendo
   }, [form.direccion, form.tipoEntrega]);
 
   function campo(key, value) {
@@ -96,9 +109,10 @@ export default function CheckoutPage() {
 
   if (cargando) return <p className="cargando">Cargando...</p>;
 
-  const subtotal          = Number(carrito?.total || 0);
+  const subtotal           = Number(carrito?.total || 0);
+  // costoEnvioEfectivo: es 0 si el cliente retira en tienda o no ingresó dirección
   const costoEnvioEfectivo = (!form.direccion || form.tipoEntrega === 'PRESENCIAL') ? 0 : costoEnvio;
-  const totalFinal        = subtotal + costoEnvioEfectivo;
+  const totalFinal         = subtotal + costoEnvioEfectivo;
 
   return (
     <div className="checkout-pagina">

@@ -1,9 +1,22 @@
 "use client";
 
+// ─── registro/page.js — Pantalla de registro de nuevo usuario ────────────────
+// Permite crear una cuenta de cliente en FarmaGO.
+// Flujo:
+//   1. El usuario completa: nombre, correo, contraseña, confirmar contraseña
+//   2. validate() verifica: campos no vacíos, contraseña ≥ 8 caracteres,
+//      ambas contraseñas coincidan
+//   3. POST /api/auth/registro (pública, sin JWT)
+//      Body: { nombre, email, passwordHash, direccion, telefono, rol: 'CLIENTE' }
+//   4. Si es exitoso → redirige a /login?registered=1
+//      (la pantalla de login muestra "¡Cuenta creada! Ya podés iniciar sesión.")
+//   5. Si el email ya existe, el backend retorna error 400 y se muestra en el campo
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./RegistroPage.module.css";
+import { API_URL } from "@/config";
 
 function MedicalCrossIcon() {
   return (
@@ -76,6 +89,7 @@ export default function RegistroPage() {
     setForm({ ...form, [field]: e.target.value });
   };
 
+  // Validaciones del lado del cliente (antes de llamar al backend)
   const validate = () => {
     const newErrors = {};
     if (!form.nombre.trim()) newErrors.nombre = "El nombre es requerido";
@@ -94,6 +108,7 @@ export default function RegistroPage() {
 
     setLoading(true);
     try {
+      // Endpoint público — no requiere JWT
       const res = await fetch(`${API_URL}/auth/registro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

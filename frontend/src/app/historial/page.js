@@ -1,4 +1,16 @@
 "use client";
+
+// ─── historial/page.js — Historial de compras del cliente ────────────────────
+// Muestra todos los pedidos anteriores del usuario logueado.
+// Requiere sesión: lee el ID del usuario desde localStorage y llama a:
+//   GET /api/historial/{usuarioId}  (requiere JWT — usa fetchWithAuth)
+//
+// La respuesta es un array de pedidos, cada uno con:
+//   pedidoId, fecha, estado, metodoPago, productos[], total
+//
+// Si el usuario no está logueado → muestra mensaje de error.
+// Si no tiene pedidos → muestra "No tenés pedidos todavía."
+
 import { API_URL, fetchWithAuth } from '@/config';
 
 import { useEffect, useState } from "react";
@@ -12,19 +24,21 @@ export default function HistorialPage() {
   useEffect(() => {
     const loadHistorial = async () => {
       try {
+        // Lee el usuario del localStorage (guardado al hacer login)
         const usuario = JSON.parse(localStorage.getItem("usuario"));
         if (!usuario) {
           setError("Debes iniciar sesión para ver tu historial");
           return;
         }
 
+        // fetchWithAuth agrega el JWT automáticamente en el header Authorization
         const response = await fetchWithAuth(`${API_URL}/historial/${usuario.id}`);
         if (!response.ok) {
           throw new Error("Error al cargar el historial");
         }
 
         const data = await response.json();
-        setHistorial(Array.isArray(data) ? data : []);
+        setHistorial(Array.isArray(data) ? data : []); // garantiza que sea array
       } catch (err) {
         setError("Error al cargar el historial");
       } finally {

@@ -1,5 +1,16 @@
 'use client';
 
+// ─── login/page.js — Pantalla de inicio de sesión ────────────────────────────
+// Flujo:
+//   1. El usuario ingresa email y contraseña
+//   2. Se llama a POST /api/auth/login (pública, sin token)
+//   3. El backend responde { token, usuario } si las credenciales son correctas
+//   4. Se guardan en localStorage: 'usuario' (datos) y 'token' (JWT)
+//   5. Redirección: si rol === 'ADMINISTRADOR' → /admin, si no → /catalogo
+//
+// El componente está envuelto en <Suspense> porque useSearchParams() requiere
+// un límite de Suspense en Next.js para no bloquear el renderizado del servidor.
+
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -24,6 +35,7 @@ function LoginContenido() {
 
     setLoading(true);
     try {
+      // Llamada pública (sin token) al endpoint de login
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -32,14 +44,15 @@ function LoginContenido() {
 
       if (!res.ok) {
         const msg = await res.text();
-        setError(msg);
+        setError(msg); // el backend envía el mensaje de error como texto
         return;
       }
 
+      // El backend retorna { token: "eyJ...", usuario: { id, nombre, rol, ... } }
       const data = await res.json();
-      const usuario = data.usuario ?? data;
-      localStorage.setItem('usuario', JSON.stringify(usuario));
-      if (data.token) localStorage.setItem('token', data.token);
+      const usuario = data.usuario ?? data; // fallback por si el formato cambia
+      localStorage.setItem('usuario', JSON.stringify(usuario)); // datos del usuario
+      if (data.token) localStorage.setItem('token', data.token); // JWT para fetchWithAuth
       router.push(usuario.rol === 'ADMINISTRADOR' ? '/admin' : '/catalogo');
     } catch (e) {
       setError('Error al conectar con el servidor');
