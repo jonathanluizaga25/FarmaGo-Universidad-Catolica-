@@ -20,6 +20,13 @@ public class AlertaController {
         this.alertaService = alertaService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<AlertaDTO>> getTodasAlertas() {
+        return ResponseEntity.ok(alertaService.listarTodas().stream()
+                .map(AlertaDTO::new)
+                .collect(Collectors.toList()));
+    }
+
     @PostMapping("/verificar")
     public ResponseEntity<String> verificarDesabastecimiento() {
         alertaService.verificarDesabastecimiento();

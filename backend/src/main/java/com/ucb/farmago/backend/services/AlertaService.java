@@ -91,6 +91,10 @@ public class AlertaService {
         }
     }
 
+    public List<Alerta> listarTodas() {
+        return alertaRepository.findAll();
+    }
+
     public List<Alerta> getAlertasNoLeidas() {
         return alertaRepository.findByLeida(Boolean.FALSE);
     }

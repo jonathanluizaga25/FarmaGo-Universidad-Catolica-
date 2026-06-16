@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Tag(name = "Autenticacion")
 @RestController
@@ -26,6 +27,16 @@ public class AuthController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/usuarios")
+    public ResponseEntity<?> listarUsuarios() {
+        return ResponseEntity.ok(
+            usuarioService.listarTodos()
+                .stream()
+                .map(UsuarioDTO::new)
+                .collect(Collectors.toList())
+        );
     }
 
     @PostMapping("/login")

@@ -8,6 +8,7 @@ import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -42,6 +43,10 @@ public class UsuarioService {
         alertaRepository.save(alerta);
 
         return guardado;
+    }
+
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
     }
 
     public Usuario login(String email, String password) {
