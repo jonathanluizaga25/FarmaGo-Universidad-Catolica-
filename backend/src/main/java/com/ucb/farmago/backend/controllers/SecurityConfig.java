@@ -9,7 +9,8 @@ package com.ucb.farmago.backend.controllers;
 //   OPTIONS /**          → siempre permitido (necesario para CORS del navegador)
 //   /api/auth/**         → público (login y registro no requieren token)
 //   GET /api/productos/** → público (el catálogo lo ve cualquiera)
-//   POST/PUT/DELETE productos, alertas, lotes, caja, etc. → solo ADMINISTRADOR
+//   POST/PUT/DELETE productos, alertas, lotes, etc. → solo ADMINISTRADOR
+//   /api/caja/**             → CAJERO o ADMINISTRADOR
 //   /api/pedidos/**      → cualquier usuario autenticado (cliente, admin, repartidor)
 //   cualquier otra ruta  → autenticado (requiere token válido)
 
@@ -65,7 +66,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/alertas/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/lotes/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/api/caja/**").hasRole("ADMINISTRADOR")
+                        // Caja: accesible para CAJERO y ADMINISTRADOR
+                        .requestMatchers("/api/caja/**").hasAnyRole("CAJERO", "ADMINISTRADOR")
                         .requestMatchers("/api/descuentos/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/proveedores/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/acuerdos/**").hasRole("ADMINISTRADOR")
