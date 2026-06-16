@@ -2,6 +2,8 @@ package com.ucb.farmago.backend.services;
 
 import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.models.DetallePedido;
+import com.ucb.farmago.backend.models.Entrega;
+import com.ucb.farmago.backend.repositories.EntregaRepository;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.models.Usuario;
 import com.ucb.farmago.backend.repositories.DetallePedidoRepository;
@@ -9,6 +11,7 @@ import com.ucb.farmago.backend.repositories.PedidoRepository;
 import com.ucb.farmago.backend.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,6 +28,9 @@ public class PedidoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EntregaRepository entregaRepository;
 
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
