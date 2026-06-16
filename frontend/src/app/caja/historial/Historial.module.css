@@ -1,0 +1,124 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito', sans-serif;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  background: linear-gradient(135deg, #eef2f8 0%, #dce6f5 100%);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 44px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 8px 40px rgba(26, 47, 94, 0.12);
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a2f5e;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #7a8aaa;
+  margin-bottom: 24px;
+}
+
+.info { text-align: center; font-size: 0.88rem; color: #7a8aaa; }
+
+.errorMsg {
+  background: #fff0f0;
+  border: 1px solid #f5c0c0;
+  color: #c0392b;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item { border-radius: 12px; }
+
+.itemLink {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1.5px solid #d0d8e8;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.itemLink:hover {
+  border-color: #e8a020;
+  box-shadow: 0 2px 8px rgba(26, 47, 94, 0.08);
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.itemId {
+  font-weight: 800;
+  color: #1a2f5e;
+  font-size: 0.95rem;
+}
+
+.badgeAbierta,
+.badgeCerrada {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.badgeAbierta { background: #eafaf1; color: #2e7d32; }
+.badgeCerrada { background: #f3f4f6; color: #6b7280; }
+
+.itemBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.85rem;
+  color: #7a8aaa;
+}
+.itemBody strong { color: #1a2f5e; font-size: 1rem; }
+
+.actions {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid #eef2f8;
+  text-align: center;
+}
+
+.linkSecundario {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e8a020;
+  text-decoration: none;
+}
+.linkSecundario:hover { text-decoration: underline; }
