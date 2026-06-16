@@ -11,7 +11,7 @@ export default function CatalogoPage() {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+    const API = API_URL;
 
     Promise.all([
       fetch(`${API}/productos/otc`).then((r) => r.json()),

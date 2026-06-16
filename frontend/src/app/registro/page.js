@@ -94,7 +94,7 @@ export default function RegistroPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/api/auth/registro', {
+      const res = await fetch(`${API_URL}/auth/registro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './login.module.css';
+import { API_URL } from '@/config';
 
 function LoginContenido() {
   const [email, setEmail]       = useState('');
@@ -23,7 +24,7 @@ function LoginContenido() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/api/auth/login', {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

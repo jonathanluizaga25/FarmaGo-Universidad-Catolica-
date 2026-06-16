@@ -1,4 +1,5 @@
 "use client";
+import { API_URL, fetchWithAuth } from '@/config';
 
 import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar/Navbar";
@@ -17,7 +18,7 @@ export default function HistorialPage() {
           return;
         }
 
-        const response = await fetch(`http://localhost:8080/api/historial/${usuario.id}`);
+        const response = await fetchWithAuth(`${API_URL}/historial/${usuario.id}`);
         if (!response.ok) {
           throw new Error("Error al cargar el historial");
         }

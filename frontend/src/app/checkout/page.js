@@ -23,32 +23,31 @@ export default function CheckoutPage() {
     tipoEntrega:   'DOMICILIO',   // opciones válidas: DOMICILIO | PRESENCIAL
   });
 
-  // Redirige si no está logueado
+  // Redirige si no está logueado y carga el carrito
   useEffect(() => {
     const u = localStorage.getItem('usuario');
     if (!u) { router.push('/login'); return; }
+    let cancelled = false;
+    async function cargarCarrito() {
+      const data = await getCart();
+      if (cancelled) return;
+      if (!data || !data.items || data.items.length === 0) {
+        router.push('/carrito');
+        return;
+      }
+      setCarrito(data);
+      setCargando(false);
+    }
     cargarCarrito();
-  }, []);
+    return () => { cancelled = true; };
+  }, [router]);
 
-  async function cargarCarrito() {
-    const data = await getCart();
-    if (!data || !data.items || data.items.length === 0) {
-      router.push('/carrito');
-      return;
-    }
-    setCarrito(data);
-    setCargando(false);
-  }
-
-  // Calcula costo de envío cada vez que cambia la dirección
+  // Calcula costo de envío cada vez que cambia la dirección (solo en callback async)
   useEffect(() => {
-    if (!form.direccion || form.tipoEntrega === 'PRESENCIAL') {
-      setCostoEnvio(0);
-      return;
-    }
+    if (!form.direccion || form.tipoEntrega === 'PRESENCIAL') return;
     const timer = setTimeout(async () => {
-      const res = await fetch(
-        `http://localhost:8080/api/pedidos/costo-envio?direccion=${encodeURIComponent(form.direccion)}`
+      const res = await fetchWithAuth(
+        `${API_URL}/pedidos/costo-envio?direccion=${encodeURIComponent(form.direccion)}`
       );
       if (res.ok) {
         const costo = await res.json();
@@ -71,17 +70,16 @@ export default function CheckoutPage() {
     setEnviando(true);
 
     const u = JSON.parse(localStorage.getItem('usuario'));
-    const total = (Number(carrito.total) + costoEnvio).toFixed(2);
+    const total = (Number(carrito.total) + costoEnvioEfectivo).toFixed(2);
 
-    const res = await fetch('http://localhost:8080/api/pedidos', {
+    const res = await fetchWithAuth(`${API_URL}/pedidos`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cliente:     { id: u.id },
         total:       total,
         tipoEntrega: form.tipoEntrega,
         metodoPago:  form.metodoPago,
-        costoEnvio:  costoEnvio,
+        costoEnvio:  costoEnvioEfectivo,
       }),
     });
 
@@ -98,8 +96,9 @@ export default function CheckoutPage() {
 
   if (cargando) return <p className="cargando">Cargando...</p>;
 
-  const subtotal   = Number(carrito?.total || 0);
-  const totalFinal = subtotal + costoEnvio;
+  const subtotal          = Number(carrito?.total || 0);
+  const costoEnvioEfectivo = (!form.direccion || form.tipoEntrega === 'PRESENCIAL') ? 0 : costoEnvio;
+  const totalFinal        = subtotal + costoEnvioEfectivo;
 
   return (
     <div className="checkout-pagina">
@@ -159,8 +158,8 @@ export default function CheckoutPage() {
                 <input className="input" value={form.direccion}
                   onChange={e => campo('direccion', e.target.value)}
                   placeholder="Ej: Av. Blanco Galindo km 5, zona Norte" />
-                {costoEnvio > 0 && (
-                  <span className="hint-envio">Costo de envío calculado: Bs. {costoEnvio}</span>
+                {costoEnvioEfectivo > 0 && (
+                  <span className="hint-envio">Costo de envío calculado: Bs. {costoEnvioEfectivo}</span>
                 )}
                 {costoEnvio === 0 && form.direccion && (
                   <span className="hint-envio gratis">¡Envío gratis en zona Centro!</span>
@@ -222,7 +221,7 @@ export default function CheckoutPage() {
           </div>
           <div className="resumen-linea">
             <span>Envío</span>
-            <span>{costoEnvio === 0 ? 'Gratis' : `Bs. ${costoEnvio}`}</span>
+            <span>{costoEnvioEfectivo === 0 ? 'Gratis' : `Bs. ${costoEnvioEfectivo}`}</span>
           </div>
           <div className="resumen-total">
             <span>Total</span>

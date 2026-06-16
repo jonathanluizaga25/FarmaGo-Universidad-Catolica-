@@ -26,22 +26,24 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        // --- REGLAS DEFINITIVAS (descomentar cuando el equipo confirme listo para activar) ---
-                        // .requestMatchers("/api/auth/**").permitAll()
-                        // .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
-                        // .requestMatchers(HttpMethod.POST,   "/api/productos/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers(HttpMethod.PUT,    "/api/productos/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers("/api/pedidos/**").authenticated()
-                        // .requestMatchers("/api/proveedores/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers("/api/lotes/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers("/api/alertas/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers("/api/caja/**").hasRole("ADMINISTRADOR")
-                        // .requestMatchers("/api/descuentos/**").hasRole("ADMINISTRADOR")
-                        // .anyRequest().authenticated()
-                        // -----------------------------------------------------------------
-
-                        .anyRequest().permitAll() // ← se mantiene por ahora, igual que en el PR de A
+                        // Rutas públicas
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
+                        // Solo ADMINISTRADOR puede modificar productos, alertas, lotes, caja, etc.
+                        .requestMatchers(HttpMethod.POST,   "/api/productos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.PUT,    "/api/productos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/alertas/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/lotes/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/caja/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/descuentos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/proveedores/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/acuerdos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/usuarios/**").hasRole("ADMINISTRADOR")
+                        // Pedidos e historial requieren estar autenticado
+                        .requestMatchers("/api/pedidos/**").authenticated()
+                        .requestMatchers("/api/historial/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
+import { API_URL, fetchWithAuth } from "@/config";
 
-const API = "http://localhost:8080/api";
+const API = API_URL;
 
 // ─── Modal Producto ───────────────────────────────────────────────────────────
 function ModalProducto({ producto, onCerrar, onGuardado }) {
@@ -28,11 +29,10 @@ function ModalProducto({ producto, onCerrar, onGuardado }) {
     if (!form.precio || isNaN(parseFloat(form.precio))) { setError("El precio debe ser un número."); return; }
     setGuardando(true); setError("");
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         esNuevo ? `${API}/productos` : `${API}/productos/${producto.id}`,
         {
           method: esNuevo ? "POST" : "PUT",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...form,
             precio:      parseFloat(form.precio),
@@ -155,10 +155,10 @@ export default function AdminPage() {
     let cancelled = false;
     async function cargarTodo() {
       const [prods, peds, ales, users] = await Promise.all([
-        fetch(`${API}/productos`).then(r => r.json()),
-        fetch(`${API}/pedidos`).then(r => r.json()),
-        fetch(`${API}/alertas`).then(r => r.json()),
-        fetch(`${API}/auth/usuarios`).then(r => r.json()),
+        fetchWithAuth(`${API}/productos`).then(r => r.json()),
+        fetchWithAuth(`${API}/pedidos`).then(r => r.json()),
+        fetchWithAuth(`${API}/alertas`).then(r => r.json()),
+        fetchWithAuth(`${API}/auth/usuarios`).then(r => r.json()),
       ]);
       if (!cancelled) {
         setProductos(prods);
@@ -181,7 +181,7 @@ export default function AdminPage() {
   // ── Handlers Productos ────────────────────────────────────────────────────
   const eliminarProducto = async (id, nombre) => {
     if (!confirm(`Eliminar "${nombre}"?`)) return;
-    const res = await fetch(`${API}/productos/${id}`, { method: "DELETE" });
+    const res = await fetchWithAuth(`${API}/productos/${id}`, { method: "DELETE" });
     if (res.ok) setProductos((prev) => prev.filter((p) => p.id !== id));
     else alert("No se pudo eliminar.");
   };
@@ -193,13 +193,13 @@ export default function AdminPage() {
 
   // ── Handler Alertas ───────────────────────────────────────────────────────
   const marcarLeida = async (id) => {
-    const res = await fetch(`${API}/alertas/${id}/leer`, { method: "PUT" });
+    const res = await fetchWithAuth(`${API}/alertas/${id}/leer`, { method: "PUT" });
     if (res.ok) setAlertas((prev) => prev.map((a) => a.id === id ? { ...a, leida: true } : a));
   };
 
   // ── Handler Pedidos ───────────────────────────────────────────────────────
   const cambiarEstadoPedido = async (id, estado) => {
-    const res = await fetch(`${API}/pedidos/${id}/estado?estado=${estado}`, { method: "PUT" });
+    const res = await fetchWithAuth(`${API}/pedidos/${id}/estado?estado=${estado}`, { method: "PUT" });
     if (res.ok) setPedidos((prev) => prev.map((p) => p.id === id ? { ...p, estado } : p));
   };
 
