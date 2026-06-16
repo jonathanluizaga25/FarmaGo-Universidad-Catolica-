@@ -7,16 +7,20 @@ import ProductCard from "../../../components/ProductCard/ProductCard";
 
 export default function CatalogoPage() {
   const [productos, setProductos] = useState([]);
-  const [cargando, setCargando]   = useState(true);
+  const [descuentos, setDescuentos] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/productos/otc')
-      .then(res => res.json())
-      .then(data => {
-        setProductos(data);
-        setCargando(false);
-      })
-      .catch(() => setCargando(false));
+    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+
+    Promise.all([
+      fetch(`${API}/productos/otc`).then((r) => r.json()),
+      fetch(`${API}/descuentos/vigentes`).then((r) => r.json()).catch(() => []),
+    ]).then(([prods, descs]) => {
+      setProductos(prods);
+      setDescuentos(descs);
+    }).catch(console.error)
+      .finally(() => setCargando(false));
   }, []);
 
   return (
@@ -35,7 +39,7 @@ export default function CatalogoPage() {
       ) : (
         <div className="products-grid">
           {productos.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} descuentos={descuentos} />
           ))}
         </div>
       )}
