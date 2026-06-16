@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { getCajaById, registrarPago } from "../../../services/cajaService";
+import Link from "next/link";
+import { getCajaById, registrarPago, cerrarCaja } from "../../../services/cajaService";
 import styles from "./CajaActiva.module.css";
 
 export default function CajaActivaPage() {
@@ -24,6 +25,10 @@ export default function CajaActivaPage() {
   const [registrando, setRegistrando] = useState(false);
   const [errorPago, setErrorPago] = useState("");
   const [pagoOk, setPagoOk] = useState(false);
+
+  // Cierre de caja
+  const [cerrando, setCerrando] = useState(false);
+  const [errorCierre, setErrorCierre] = useState("");
 
   useEffect(() => {
     if (!usuario || usuario.rol !== "CAJERO") {
@@ -70,6 +75,28 @@ export default function CajaActivaPage() {
     }
   };
 
+  const handleCerrarCaja = async () => {
+    const confirmado = window.confirm(
+      `¿Seguro que deseás cerrar la caja #${caja.id}?\n\n` +
+      `Total efectivo: Bs. ${Number(caja.totalEfectivo).toFixed(2)}\n` +
+      `Total QR: Bs. ${Number(caja.totalQr).toFixed(2)}\n` +
+      `Gran total: Bs. ${Number(caja.totalGeneral).toFixed(2)}\n\n` +
+      `Esta acción no se puede deshacer.`
+    );
+    if (!confirmado) return;
+
+    setErrorCierre("");
+    setCerrando(true);
+    try {
+      const cajaActualizada = await cerrarCaja(caja.id);
+      setCaja(cajaActualizada);
+    } catch (e) {
+      setErrorCierre(e.message || "No se pudo cerrar la caja.");
+    } finally {
+      setCerrando(false);
+    }
+  };
+
   if (!usuario || usuario.rol !== "CAJERO") return null;
 
   return (
@@ -104,50 +131,83 @@ export default function CajaActivaPage() {
               </ul>
 
               {caja.cerrado ? (
-                <div className={styles.notice}>
-                  Esta caja está cerrada. No se pueden registrar más pagos.
-                </div>
-              ) : (
-                <div className={styles.pagoSection}>
-                  <h2 className={styles.subtitleSection}>Registrar pago</h2>
-
-                  {errorPago && <div className={styles.errorMsgPago}>{errorPago}</div>}
-                  {pagoOk && <div className={styles.success}>Pago registrado correctamente.</div>}
-
-                  <div className={styles.fieldRow}>
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="montoEfectivo">Efectivo (Bs.)</label>
-                      <input
-                        id="montoEfectivo"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        className={styles.input}
-                        placeholder="0.00"
-                        value={montoEfectivo}
-                        onChange={(e) => setMontoEfectivo(e.target.value)}
-                      />
+                <div className={styles.resumenCierre}>
+                  <h2 className={styles.subtitleSection}>Resumen del turno</h2>
+                  <div className={styles.resumenGrid}>
+                    <div className={styles.resumenItem}>
+                      <span>Efectivo</span>
+                      <strong>Bs. {Number(caja.totalEfectivo).toFixed(2)}</strong>
                     </div>
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="montoQr">QR (Bs.)</label>
-                      <input
-                        id="montoQr"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        className={styles.input}
-                        placeholder="0.00"
-                        value={montoQr}
-                        onChange={(e) => setMontoQr(e.target.value)}
-                      />
+                    <div className={styles.resumenItem}>
+                      <span>QR</span>
+                      <strong>Bs. {Number(caja.totalQr).toFixed(2)}</strong>
+                    </div>
+                    <div className={styles.resumenItemTotal}>
+                      <span>Gran total</span>
+                      <strong>Bs. {Number(caja.totalGeneral).toFixed(2)}</strong>
                     </div>
                   </div>
-
-                  <button className={styles.btn} onClick={handleRegistrarPago} disabled={registrando}>
-                    {registrando ? "Registrando..." : "Registrar pago"}
-                  </button>
+                  <p className={styles.cierreInfo}>
+                    Esta caja está cerrada y no admite más movimientos.
+                  </p>
                 </div>
+              ) : (
+                <>
+                  <div className={styles.pagoSection}>
+                    <h2 className={styles.subtitleSection}>Registrar pago</h2>
+
+                    {errorPago && <div className={styles.errorMsgPago}>{errorPago}</div>}
+                    {pagoOk && <div className={styles.success}>Pago registrado correctamente.</div>}
+
+                    <div className={styles.fieldRow}>
+                      <div className={styles.field}>
+                        <label className={styles.label} htmlFor="montoEfectivo">Efectivo (Bs.)</label>
+                        <input
+                          id="montoEfectivo"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          className={styles.input}
+                          placeholder="0.00"
+                          value={montoEfectivo}
+                          onChange={(e) => setMontoEfectivo(e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.field}>
+                        <label className={styles.label} htmlFor="montoQr">QR (Bs.)</label>
+                        <input
+                          id="montoQr"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          className={styles.input}
+                          placeholder="0.00"
+                          value={montoQr}
+                          onChange={(e) => setMontoQr(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <button className={styles.btn} onClick={handleRegistrarPago} disabled={registrando}>
+                      {registrando ? "Registrando..." : "Registrar pago"}
+                    </button>
+                  </div>
+
+                  <div className={styles.cierreSection}>
+                    {errorCierre && <div className={styles.errorMsgPago}>{errorCierre}</div>}
+                    <button className={styles.btnDanger} onClick={handleCerrarCaja} disabled={cerrando}>
+                      {cerrando ? "Cerrando caja..." : "Cerrar caja"}
+                    </button>
+                  </div>
+                </>
               )}
+
+              <div className={styles.actions}>
+                <Link href="/caja/historial" className={styles.linkSecundario}>Ver historial de cajas</Link>
+                {caja.cerrado && (
+                  <Link href="/caja/abrir" className={styles.linkSecundario}>Abrir nueva caja</Link>
+                )}
+              </div>
             </>
           )}
         </div>

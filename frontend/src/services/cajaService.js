@@ -55,3 +55,23 @@ export async function registrarPago(cajaId, montoEfectivo, montoQr) {
   }
   return res.json();
 }
+
+//HU-C3
+export async function cerrarCaja(cajaId) {
+  const res = await fetch(`${API_URL}/caja/${cajaId}/cerrar`, {
+    method: 'PUT',
+  });
+  if (!res.ok) {
+    let mensaje = 'No se pudo cerrar la caja';
+    try {
+      const data = await res.json();
+      if (data?.message && data.message !== 'No message available') {
+        mensaje = data.message;
+      }
+    } catch {
+      // sin cuerpo JSON
+    }
+    throw new Error(mensaje);
+  }
+  return res.json();
+}
