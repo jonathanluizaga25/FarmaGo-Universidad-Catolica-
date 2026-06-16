@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 
@@ -120,7 +120,10 @@ const IconSalir       = () => <svg width="18" height="18" viewBox="0 0 24 24" fi
 export default function AdminPage() {
   const router = useRouter();
   const [seccion, setSeccion] = useState("productos");
-  const [usuario, setUsuario] = useState(null);
+  const [usuario] = useState(() => {
+    if (typeof window === "undefined") return null;
+    return JSON.parse(localStorage.getItem("usuario") || "null");
+  });
 
   // Productos
   const [productos, setProductos]         = useState([]);
@@ -143,37 +146,31 @@ export default function AdminPage() {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("usuario") || "null");
-    if (!u || u.rol !== "ADMINISTRADOR") { router.replace("/login"); return; }
-    setUsuario(u);
-  }, [router]);
+    if (!usuario || usuario.rol !== "ADMINISTRADOR") { router.replace("/login"); }
+  }, [usuario, router]);
 
   // ── Fetch datos ──────────────────────────────────────────────────────────
-  const cargarProductos = useCallback(async () => {
-    const res = await fetch(`${API}/productos`);
-    setProductos(await res.json());
-  }, []);
-
-  const cargarPedidos = useCallback(async () => {
-    const res = await fetch(`${API}/pedidos`);
-    setPedidos(await res.json());
-  }, []);
-
-  const cargarAlertas = useCallback(async () => {
-    const res = await fetch(`${API}/alertas`);
-    setAlertas(await res.json());
-  }, []);
-
-  const cargarUsuarios = useCallback(async () => {
-    const res = await fetch(`${API}/auth/usuarios`);
-    setUsuarios(await res.json());
-  }, []);
-
   useEffect(() => {
-    if (!usuario) return;
-    Promise.all([cargarProductos(), cargarPedidos(), cargarAlertas(), cargarUsuarios()])
-      .finally(() => setCargando(false));
-  }, [usuario, cargarProductos, cargarPedidos, cargarAlertas, cargarUsuarios]);
+    if (!usuario || usuario.rol !== "ADMINISTRADOR") return;
+    let cancelled = false;
+    async function cargarTodo() {
+      const [prods, peds, ales, users] = await Promise.all([
+        fetch(`${API}/productos`).then(r => r.json()),
+        fetch(`${API}/pedidos`).then(r => r.json()),
+        fetch(`${API}/alertas`).then(r => r.json()),
+        fetch(`${API}/auth/usuarios`).then(r => r.json()),
+      ]);
+      if (!cancelled) {
+        setProductos(prods);
+        setPedidos(peds);
+        setAlertas(ales);
+        setUsuarios(users);
+        setCargando(false);
+      }
+    }
+    cargarTodo();
+    return () => { cancelled = true; };
+  }, [usuario]);
 
   // ── KPIs ─────────────────────────────────────────────────────────────────
   const pedidosPendientes = pedidos.filter((p) => p.estado === "PENDIENTE").length;
