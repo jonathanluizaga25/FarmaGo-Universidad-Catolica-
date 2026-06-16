@@ -1,23 +1,22 @@
 package com.ucb.farmago.backend.controllers;
 
-import com.ucb.farmago.backend.dto.FacturaValidacionDTO;
-import com.ucb.farmago.backend.dto.HistorialPedidoDTO;
 import com.ucb.farmago.backend.dto.PedidoDTO;
-import com.ucb.farmago.backend.dto.ResultadoValidacionDTO;
 import com.ucb.farmago.backend.models.Pedido;
 import com.ucb.farmago.backend.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "Pedidos")
 @RestController
 @RequestMapping("/api/pedidos")
+@CrossOrigin(origins = "*")
 public class PedidoController {
 
     @Autowired
@@ -40,12 +39,9 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crear(@RequestBody Pedido pedido) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoDTO(pedidoService.crear(pedido)));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<PedidoDTO> crear(@RequestBody Pedido pedido) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new PedidoDTO(pedidoService.crear(pedido)));
     }
 
     @PutMapping("/{id}/estado")
@@ -58,7 +54,11 @@ public class PedidoController {
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public List<PedidoDTO> listarPorCliente(@PathVariable Long clienteId) {
+    public List<PedidoDTO> listarPorCliente(
+            @PathVariable Long clienteId,
+            Authentication authentication) {
+
+        verificarAccesoCliente(clienteId, authentication); // TODO Plan03-B: activo cuando se descomenten reglas
         return pedidoService.listarPorCliente(clienteId).stream()
                 .map(PedidoDTO::new)
                 .collect(Collectors.toList());
@@ -84,32 +84,39 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.calcularCostoEnvio(direccion));
     }
 
-    @PutMapping("/{id}/cancelar")
-    public ResponseEntity<?> cancelar(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(new PedidoDTO(pedidoService.cancelar(id)));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/validar-factura")
-    public ResponseEntity<ResultadoValidacionDTO> validarFactura(@RequestBody FacturaValidacionDTO facturaDTO) {
-        try {
-            return ResponseEntity.ok(pedidoService.validarFacturaVsPedido(facturaDTO));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResultadoValidacionDTO("ERROR", e.getMessage()));
-        }
-    }
-
+    // ==========================================
+    // HU-15: Historial de compras del cliente
+    // ==========================================
     @GetMapping("/cliente/{clienteId}/historial")
-    public ResponseEntity<List<HistorialPedidoDTO>> obtenerHistorialCompras(@PathVariable Long clienteId) {
-        List<HistorialPedidoDTO> historial = pedidoService.obtenerHistorialCliente(clienteId);
+    public ResponseEntity<List<com.ucb.farmago.backend.dto.HistorialPedidoDTO>> obtenerHistorialCompras(
+            @PathVariable Long clienteId,
+            Authentication authentication) {
+
+        verificarAccesoCliente(clienteId, authentication); // TODO Plan03-B: activo cuando se descomenten reglas
+        List<com.ucb.farmago.backend.dto.HistorialPedidoDTO> historial =
+                pedidoService.obtenerHistorialCliente(clienteId);
         if (historial.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(historial);
     }
+
+    // ==========================================
+    // Anti-IDOR: verifica que el clienteId pertenece al usuario del token.
+    // Mientras no haya reglas restrictivas activas, authentication puede llegar
+        // null o anonimo y el metodo retorna sin hacer nada -- comportamiento identico al actual.
+    // ==========================================
+    private void verificarAccesoCliente(Long clienteId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) return;
+        if (authentication instanceof AnonymousAuthenticationToken) return;
+
+        boolean esAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
+        if (!esAdmin && !pedidoService.perteneceAlCliente(clienteId, authentication.getName())) {
+            throw new org.springframework.security.access.AccessDeniedException("Acceso denegado");
+        }
+    }
 }
+
+
 
