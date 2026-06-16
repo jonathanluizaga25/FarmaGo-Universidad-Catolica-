@@ -46,6 +46,39 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    // HU-A1: Asignar un repartidor a un pedido PENDIENTE desde el panel de supervision
+    @Transactional
+    public Pedido asignarRepartidor(Long pedidoId, Long repartidorId) {
+        Pedido pedido = obtenerPorId(pedidoId);
+
+        if (pedido.getEstado() == null || !pedido.getEstado().trim().equalsIgnoreCase("PENDIENTE")) {
+            throw new RuntimeException("Solo se pueden asignar pedidos en estado PENDIENTE");
+        }
+
+        Usuario repartidor = usuarioRepository.findById(repartidorId)
+                .orElseThrow(() -> new RuntimeException("Repartidor no encontrado"));
+
+        if (repartidor.getRol() == null || !repartidor.getRol().trim().equalsIgnoreCase("REPARTIDOR")) {
+            throw new RuntimeException("El usuario seleccionado no tiene rol REPARTIDOR");
+        }
+
+        pedido.setRepartidor(repartidor);
+        pedido.setEstado("ASIGNADO");
+        pedidoRepository.save(pedido);
+
+        // Si el pedido es a domicilio ya tiene una Entrega creada (PENDIENTE_ASIGNACION),
+        // le asignamos el repartidor y actualizamos su estado.
+        List<Entrega> entregas = entregaRepository.findByPedidoId(pedido.getId());
+        if (!entregas.isEmpty()) {
+            Entrega entrega = entregas.get(0);
+            entrega.setRepartidor(repartidor);
+            entrega.setEstado("ASIGNADA");
+            entregaRepository.save(entrega);
+        }
+
+        return pedido;
+    }
+
     public List<Pedido> listarPorCliente(Long clienteId) {
         return pedidoRepository.findByClienteId(clienteId);
     }

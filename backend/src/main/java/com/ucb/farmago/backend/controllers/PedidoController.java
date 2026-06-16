@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,6 +51,21 @@ public class PedidoController {
             return ResponseEntity.ok(new PedidoDTO(pedidoService.actualizarEstado(id, estado)));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // HU-A1: Asignar un repartidor a un pedido pendiente desde el panel de supervision
+    // PUT /api/pedidos/{id}/asignar  body: { "repartidorId": 5 }
+    @PutMapping("/{id}/asignar")
+    public ResponseEntity<?> asignarRepartidor(@PathVariable Long id, @RequestBody Map<String, Long> body) {
+        try {
+            Long repartidorId = body.get("repartidorId");
+            if (repartidorId == null) {
+                return ResponseEntity.badRequest().body("Se requiere el campo repartidorId");
+            }
+            return ResponseEntity.ok(new PedidoDTO(pedidoService.asignarRepartidor(id, repartidorId)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

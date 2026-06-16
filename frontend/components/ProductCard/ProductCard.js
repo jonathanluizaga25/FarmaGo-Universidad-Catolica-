@@ -4,7 +4,7 @@ import { useState } from "react";
 import "./ProductCard.css";
 import { addToCart } from "../../src/services/cartService";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, descuentos = [] }) {
   const [agregando, setAgregando] = useState(false);
   const [agregado, setAgregado]   = useState(false);
 
@@ -18,9 +18,15 @@ export default function ProductCard({ product }) {
     }
   }
 
+  // Buscar si hay un descuento vigente para este producto
+  const descuento = descuentos.find((d) => d.producto?.id === product.id);
+  const precioOriginal = parseFloat(product.precio);
+  const precioFinal = descuento
+    ? precioOriginal * (1 - parseFloat(descuento.porcentaje) / 100)
+    : precioOriginal;
+
   return (
     <div className="product-card">
-
       <img
         src={product.imagenUrl || '/placeholder.png'}
         alt={product.nombre}
@@ -38,7 +44,16 @@ export default function ProductCard({ product }) {
           <span className="product-categoria">{product.categoria}</span>
         )}
 
-        <p className="price">Bs. {product.precio}</p>
+        {/* Precio con o sin descuento */}
+        {descuento ? (
+          <div className="precio-wrapper">
+            <span className="price-original">Bs. {precioOriginal.toFixed(2)}</span>
+            <span className="price price-oferta">Bs. {precioFinal.toFixed(2)}</span>
+            <span className="badge-oferta">-{descuento.porcentaje}%</span>
+          </div>
+        ) : (
+          <p className="price">Bs. {precioOriginal.toFixed(2)}</p>
+        )}
 
         <p className="stock">Disponibles: {product.stockActual}</p>
       </div>
@@ -56,7 +71,6 @@ export default function ProductCard({ product }) {
           ? '✓ Agregado'
           : 'Agregar al carrito'}
       </button>
-
     </div>
   );
 }
