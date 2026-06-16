@@ -35,8 +35,10 @@ function LoginContenido() {
         return;
       }
 
-      const usuario = await res.json();
+      const data = await res.json();
+      const usuario = data.usuario ?? data;
       localStorage.setItem('usuario', JSON.stringify(usuario));
+      if (data.token) localStorage.setItem('token', data.token);
       router.push(usuario.rol === 'ADMINISTRADOR' ? '/admin' : '/catalogo');
     } catch (e) {
       setError('Error al conectar con el servidor');
