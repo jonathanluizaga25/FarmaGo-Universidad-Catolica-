@@ -35,3 +35,23 @@ export async function getCajaById(id) {
   if (!res.ok) throw new Error('Caja no encontrada');
   return res.json();
 }
+
+//HU-C2 - Registrar pagos
+export async function registrarPago(cajaId, montoEfectivo, montoQr) {
+  const res = await fetch(`${API_URL}/caja/${cajaId}/pago?montoEfectivo=${montoEfectivo}&montoQr=${montoQr}`, {
+    method: 'PUT',
+  });
+  if (!res.ok) {
+    let mensaje = 'No se pudo registrar el pago';
+    try {
+      const data = await res.json();
+      if (data?.message && data.message !== 'No message available') {
+        mensaje = data.message;
+      }
+    } catch {
+      // sin cuerpo JSON
+    }
+    throw new Error(mensaje);
+  }
+  return res.json();
+}

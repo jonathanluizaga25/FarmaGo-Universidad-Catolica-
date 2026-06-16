@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { getCajaById } from "../../../services/cajaService";
+import { getCajaById, registrarPago } from "../../../services/cajaService";
 import styles from "./CajaActiva.module.css";
 
 export default function CajaActivaPage() {
@@ -18,6 +18,13 @@ export default function CajaActivaPage() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
+  // Registro de pagos
+  const [montoEfectivo, setMontoEfectivo] = useState("");
+  const [montoQr, setMontoQr] = useState("");
+  const [registrando, setRegistrando] = useState(false);
+  const [errorPago, setErrorPago] = useState("");
+  const [pagoOk, setPagoOk] = useState(false);
+
   useEffect(() => {
     if (!usuario || usuario.rol !== "CAJERO") {
       router.replace("/login");
@@ -32,6 +39,36 @@ export default function CajaActivaPage() {
       .catch(() => setError("No se pudo cargar la información de la caja."))
       .finally(() => setCargando(false));
   }, [id, usuario]);
+
+  const handleRegistrarPago = async () => {
+    setErrorPago("");
+    setPagoOk(false);
+
+    const efectivo = montoEfectivo === "" ? 0 : parseFloat(montoEfectivo);
+    const qr = montoQr === "" ? 0 : parseFloat(montoQr);
+
+    if (isNaN(efectivo) || isNaN(qr) || efectivo < 0 || qr < 0) {
+      setErrorPago("Ingresá montos válidos (mayores o iguales a 0).");
+      return;
+    }
+    if (efectivo === 0 && qr === 0) {
+      setErrorPago("Ingresá al menos un monto mayor a 0.");
+      return;
+    }
+
+    setRegistrando(true);
+    try {
+      const cajaActualizada = await registrarPago(caja.id, efectivo, qr);
+      setCaja(cajaActualizada);
+      setMontoEfectivo("");
+      setMontoQr("");
+      setPagoOk(true);
+    } catch (e) {
+      setErrorPago(e.message || "No se pudo registrar el pago.");
+    } finally {
+      setRegistrando(false);
+    }
+  };
 
   if (!usuario || usuario.rol !== "CAJERO") return null;
 
@@ -65,6 +102,52 @@ export default function CajaActivaPage() {
                   </strong>
                 </li>
               </ul>
+
+              {caja.cerrado ? (
+                <div className={styles.notice}>
+                  Esta caja está cerrada. No se pueden registrar más pagos.
+                </div>
+              ) : (
+                <div className={styles.pagoSection}>
+                  <h2 className={styles.subtitleSection}>Registrar pago</h2>
+
+                  {errorPago && <div className={styles.errorMsgPago}>{errorPago}</div>}
+                  {pagoOk && <div className={styles.success}>Pago registrado correctamente.</div>}
+
+                  <div className={styles.fieldRow}>
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor="montoEfectivo">Efectivo (Bs.)</label>
+                      <input
+                        id="montoEfectivo"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className={styles.input}
+                        placeholder="0.00"
+                        value={montoEfectivo}
+                        onChange={(e) => setMontoEfectivo(e.target.value)}
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor="montoQr">QR (Bs.)</label>
+                      <input
+                        id="montoQr"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className={styles.input}
+                        placeholder="0.00"
+                        value={montoQr}
+                        onChange={(e) => setMontoQr(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <button className={styles.btn} onClick={handleRegistrarPago} disabled={registrando}>
+                    {registrando ? "Registrando..." : "Registrar pago"}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
